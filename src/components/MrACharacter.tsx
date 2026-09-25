@@ -5,7 +5,7 @@ type Props = { activeTab: TabType; data: Live2DData | null; data3D: ThreeDRespon
 type BotAction = 'idle' | 'walking' | 'resting' | 'peeking' | 'dancing' | 'thinking' | 'waving' | 'pointing' | 'confused' | 'fallen';
 type BrainEvent = 'focus' | 'loading' | 'result2d' | 'result3d' | 'error' | 'tab' | 'click';
 
-const defaultPosition = { x: 48, y: 34 };
+const defaultPosition = { x: 24, y: 34 };
 
 export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading2D, loading3D, error2D, error3D }) => {
   const value2D = data?.live?.twod && data.live.twod !== '--' ? data.live.twod : '';
@@ -24,6 +24,13 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
     setMessage(text);
     if (messageTimer.current) window.clearTimeout(messageTimer.current);
     messageTimer.current = window.setTimeout(() => setMessage(''), duration);
+  }, []);
+
+  const logoAnchor = useCallback(() => {
+    const logo = document.querySelector('[title="Mr.A 2D3D Live ပင်မစာမျက်နှာ"]');
+    if (!logo) return defaultPosition;
+    const rect = logo.getBoundingClientRect();
+    return { x: Math.max(8, rect.right + 5), y: Math.max(28, rect.top + 2) };
   }, []);
 
   const moveTo = useCallback((next: { x: number; y: number }, nextAction: BotAction, text: string, duration = 3000) => {
@@ -45,9 +52,16 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
     if (event === 'loading') { moveTo({ x: Math.max(42, window.innerWidth * .32), y: 92 }, 'thinking', text || 'ဒေတာကို စစ်ဆေးနေတယ်...', 2800); return; }
     if (event === 'result2d' || event === 'result3d') { moveTo({ x: Math.max(42, window.innerWidth * .42), y: 112 }, 'dancing', text || 'ရလဒ်အသစ် ထွက်လာပြီ!', 4200); return; }
     if (event === 'error') { moveTo({ x: 44, y: 70 }, 'confused', text || 'ခဏလေးနော်၊ ဒေတာ ပြန်ရှာနေတယ်', 3600); return; }
-    if (event === 'tab') { moveTo({ x: 48, y: 34 }, 'waving', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
-    moveTo(position, 'dancing', text || 'ကံကောင်းပါစေ!', 2600);
-  }, [moveTo, position]);
+    if (event === 'tab') { moveTo(logoAnchor(), 'waving', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
+    moveTo(logoAnchor(), 'dancing', text || 'ကံကောင်းပါစေ!', 2600);
+  }, [logoAnchor, moveTo]);
+
+  useEffect(() => {
+    const anchor = () => setPosition(logoAnchor());
+    anchor();
+    window.addEventListener('resize', anchor);
+    return () => window.removeEventListener('resize', anchor);
+  }, [logoAnchor]);
 
   // The free-plan brain is event-driven: UI intent + API state determine movement and expression.
   useEffect(() => {
@@ -62,13 +76,14 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
   }, [activeTab, brain]);
 
   useEffect(() => {
-    const initialLoad = !last2D.current && !last3D.current;
+    const first2DLoad = loading2D && activeTab === '2d_live' && !last2D.current;
+    const first3DLoad = loading3D && activeTab.startsWith('3d_') && !last3D.current;
     if ((loading2D && activeTab === '2d_live') || (loading3D && activeTab.startsWith('3d_'))) {
-      if (initialLoad) { setAction('thinking'); speak(activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...', 2800); }
+      if (first2DLoad || first3DLoad) { setPosition(logoAnchor()); setAction('thinking'); speak(activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...', 2800); }
       else brain('loading', activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...');
     }
     else if ((error2D && activeTab === '2d_live') || (error3D && activeTab.startsWith('3d_'))) brain('error');
-  }, [activeTab, loading2D, loading3D, error2D, error3D, brain]);
+  }, [activeTab, loading2D, loading3D, error2D, error3D, brain, logoAnchor, speak]);
 
   useEffect(() => {
     if (value2D && value2D !== last2D.current) {
