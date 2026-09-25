@@ -7,7 +7,6 @@ import { AiChat } from './components/AiChat';
 import { DreamCalculator } from './components/DreamCalculator';
 import { DeploymentModal } from './components/DeploymentModal';
 import { MenuDrawer } from './components/MenuDrawer';
-import { BottomNav } from './components/BottomNav';
 import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 
@@ -253,7 +252,6 @@ export default function App() {
         data2D={data2D}
       />
 
-      <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
     </div>
   );
 }
