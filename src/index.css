@@ -298,3 +298,9 @@ main { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   .mra-companion, .mra-creature-core, .mra-creature, .mra-creature-eye, .mra-creature-orb, .mra-creature-spark { animation: none !important; transition-duration: .01ms !important; }
 }
+
+/* Premium market desk surface polish */
+@media (prefers-reduced-motion: no-preference) {
+  .market-surface, .result-surface { animation: surface-enter .45s cubic-bezier(.23,1,.32,1) both; }
+}
+@keyframes surface-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
