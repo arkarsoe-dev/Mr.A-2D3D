@@ -1,286 +1,60 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Header } from './components/Header';
-import { Live2DCard } from './components/Live2DCard';
-import { ThreeDSection } from './components/ThreeDSection';
-import { CommunityChat } from './components/CommunityChat';
-import { AiChat } from './components/AiChat';
-import { TwoDHistory } from './components/TwoDHistory';
-import { DreamCalculator } from './components/DreamCalculator';
-import { MenuDrawer } from './components/MenuDrawer';
-import { MrACharacter } from './components/MrACharacter';
-import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ChatHome } from './components/ChatHome';
+import { Live2DData, NumeralMode, ThreeDResponse } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 
 const TWO_D_API_URL = 'https://api.thaistock2d.com/live';
 const THREE_D_API_URL = 'https://api.2dboss.com/api/v2/v1/2dstock/threed-result';
-const THREE_D_FALLBACK: ThreeDResponse = {
-  data: [
-    { result: '640', datetime: '2026-09-16' },
-    { result: '212', datetime: '2026-09-01' },
-    { result: '615', datetime: '2026-08-16' },
-    { result: '479', datetime: '2026-08-01' },
-    { result: '214', datetime: '2026-07-16' },
-  ],
-  result: 1,
-  message: 'fallback',
-  is_fallback: true,
-};
+const THREE_D_FALLBACK: ThreeDResponse = { data: [{ result: '640', datetime: '2026-09-16' }, { result: '212', datetime: '2026-09-01' }, { result: '615', datetime: '2026-08-16' }], result: 1, message: 'fallback', is_fallback: true };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('2d_live');
-  const [numeralMode, setNumeralMode] = useState<NumeralMode>(() => {
-    return (localStorage.getItem('mra_numeral_mode') as NumeralMode) || 'myanmar';
-  });
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('mra_sound_enabled') === 'true';
-  });
-
+  const [numeralMode, setNumeralMode] = useState<NumeralMode>(() => (localStorage.getItem('mra_numeral_mode') as NumeralMode) || 'myanmar');
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('mra_sound_enabled') === 'true');
   const [data2D, setData2D] = useState<Live2DData | null>(null);
-  const [loading2D, setLoading2D] = useState(true);
-  const [error2D, setError2D] = useState(false);
-
   const [data3D, setData3D] = useState<ThreeDResponse | null>(null);
+  const [loading2D, setLoading2D] = useState(true);
   const [loading3D, setLoading3D] = useState(true);
+  const [error2D, setError2D] = useState(false);
   const [error3D, setError3D] = useState(false);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const previous2D = useRef('');
 
-  const prevTwodRef = useRef<string>('');
-
-  // Toggle numeral mode
-  const handleToggleNumeralMode = () => {
-    const nextMode: NumeralMode = numeralMode === 'myanmar' ? 'english' : 'myanmar';
-    setNumeralMode(nextMode);
-    localStorage.setItem('mra_numeral_mode', nextMode);
-  };
-
-  // Toggle sound
-  const handleToggleSound = () => {
-    const nextState = !soundEnabled;
-    setSoundEnabled(nextState);
-    localStorage.setItem('mra_sound_enabled', String(nextState));
-    if (nextState) {
-      playNotificationSound();
-    }
-  };
-
-  // Fetch 2D Live Data
-  const fetch2DLive = useCallback(async (isManual = false) => {
+  const fetch2D = useCallback(async (manual = false) => {
+    if (manual) setIsRefreshing(true);
     try {
-      if (isManual) setIsRefreshing(true);
-      const res = await fetch(`${TWO_D_API_URL}?_=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      if (res.ok) {
-        const json: Live2DData = await res.json();
-        setData2D(json);
-        setError2D(false);
-
-        // Check if 2D number updated and play sound
-        if (json.live?.twod && json.live.twod !== '--') {
-          if (prevTwodRef.current && prevTwodRef.current !== json.live.twod && soundEnabled) {
-            playNotificationSound();
-          }
-          prevTwodRef.current = json.live.twod;
-        }
-      } else {
-        setError2D(true);
-      }
-    } catch (e) {
-      console.warn('Failed to fetch 2D live data:', e);
-      setError2D(true);
-    } finally {
-      setLoading2D(false);
-      if (isManual) setIsRefreshing(false);
-    }
+      const response = await fetch(`${TWO_D_API_URL}?_=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('2D request failed');
+      const json: Live2DData = await response.json();
+      setData2D(json); setError2D(false);
+      const next = json.live?.twod;
+      if (next && next !== '--' && previous2D.current && next !== previous2D.current && soundEnabled) playNotificationSound();
+      if (next && next !== '--') previous2D.current = next;
+    } catch { setError2D(true); }
+    finally { setLoading2D(false); if (manual) setIsRefreshing(false); }
   }, [soundEnabled]);
 
-  // Fetch 3D Results
-  const fetch3DResults = useCallback(async () => {
+  const fetch3D = useCallback(async () => {
     try {
       setLoading3D(true);
-      const res = await fetch(`${THREE_D_API_URL}?_=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      if (res.ok) {
-        const json: ThreeDResponse = await res.json();
-        setData3D(json);
-        setError3D(false);
-      } else {
-        setError3D(true);
-      }
-    } catch (e) {
-      console.warn('Failed to fetch 3D data:', e);
-      setError3D(true);
-      setData3D(THREE_D_FALLBACK);
-    } finally {
-      setLoading3D(false);
-    }
+      const response = await fetch(`${THREE_D_API_URL}?_=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('3D request failed');
+      setData3D(await response.json()); setError3D(false);
+    } catch { setData3D(THREE_D_FALLBACK); setError3D(true); }
+    finally { setLoading3D(false); }
   }, []);
 
-  // Set up polling intervals
   useEffect(() => {
-    fetch2DLive();
-    fetch3DResults();
+    fetch2D(); fetch3D();
+    const liveTimer = window.setInterval(() => { if (document.visibilityState === 'visible') fetch2D(); }, 5000);
+    const threeTimer = window.setInterval(() => { if (document.visibilityState === 'visible') fetch3D(); }, 180000);
+    const onVisible = () => { if (document.visibilityState === 'visible') { fetch2D(); fetch3D(); } };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { window.clearInterval(liveTimer); window.clearInterval(threeTimer); document.removeEventListener('visibilitychange', onVisible); };
+  }, [fetch2D, fetch3D]);
 
-    // Keep the live screen fresh without wasting device resources in hidden tabs.
-    const interval2D = setInterval(() => {
-      if (document.visibilityState === 'visible') fetch2DLive();
-    }, 5000);
+  const toggleNumeral = () => { const next: NumeralMode = numeralMode === 'myanmar' ? 'english' : 'myanmar'; setNumeralMode(next); localStorage.setItem('mra_numeral_mode', next); };
+  const refresh = () => { fetch2D(true); fetch3D(); };
+  const toggleSound = () => { const next = !soundEnabled; setSoundEnabled(next); localStorage.setItem('mra_sound_enabled', String(next)); if (next) playNotificationSound(); };
 
-    // 3D polling every 45 seconds
-    const interval3D = setInterval(() => {
-      if (document.visibilityState === 'visible') fetch3DResults();
-    }, 180000);
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetch2DLive();
-        fetch3DResults();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      clearInterval(interval2D);
-      clearInterval(interval3D);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [fetch2DLive, fetch3DResults]);
-
-  const handleManualRefresh = () => {
-    fetch2DLive(true);
-    fetch3DResults();
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans pb-8 selection:bg-amber-500 selection:text-slate-950">
-      {/* Top Header with Brand Logo & Compact Tabs & Menu Drawer button */}
-      <Header
-        activeTab={activeTab}
-        onChangeTab={setActiveTab}
-        onOpenDrawer={() => setIsDrawerOpen(true)}
-      />
-
-      <MrACharacter
-        activeTab={activeTab}
-        data={data2D}
-        data3D={data3D}
-        loading2D={loading2D}
-        loading3D={loading3D}
-        error2D={error2D}
-        error3D={error3D}
-      />
-
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-5">
-        {/* Tab Views */}
-        {activeTab === '2d_live' && (
-          <Live2DCard
-            data={data2D}
-            numeralMode={numeralMode}
-            loading={loading2D}
-          />
-        )}
-
-        {activeTab === '2d_history' && (
-          <TwoDHistory numeralMode={numeralMode} />
-        )}
-
-        {/* 3D Result Screens (Splitted into specialized cleaner views) */}
-        {activeTab === '3d_result' && (
-          <ThreeDSection
-            items={data3D?.data || []}
-            loading={loading3D}
-            numeralMode={numeralMode}
-            initialMode="arkarsoe"
-            onModeChange={(mode) => {
-              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
-              else if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
-              else if (mode === 'list') setActiveTab('3d_history');
-            }}
-          />
-        )}
-
-        {activeTab === '3d_arkarsoe' && (
-          <ThreeDSection
-            items={data3D?.data || []}
-            loading={loading3D}
-            numeralMode={numeralMode}
-            initialMode="arkarsoe"
-            onModeChange={(mode) => {
-              if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
-              else if (mode === 'list') setActiveTab('3d_history');
-            }}
-          />
-        )}
-
-        {activeTab === '3d_calendar' && (
-          <ThreeDSection
-            items={data3D?.data || []}
-            loading={loading3D}
-            numeralMode={numeralMode}
-            initialMode="monthlyCalendar"
-            onModeChange={(mode) => {
-              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
-              else if (mode === 'list') setActiveTab('3d_history');
-            }}
-          />
-        )}
-
-        {activeTab === '3d_history' && (
-          <ThreeDSection
-            items={data3D?.data || []}
-            loading={loading3D}
-            numeralMode={numeralMode}
-            initialMode="list"
-            onModeChange={(mode) => {
-              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
-              else if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
-            }}
-          />
-        )}
-
-        {activeTab === 'group_chat' && (
-          <CommunityChat
-            numeralMode={numeralMode}
-          />
-        )}
-
-        {activeTab === 'ai_chat' && (
-          <AiChat numeralMode={numeralMode} />
-        )}
-
-        {activeTab === 'tools' && (
-          <DreamCalculator
-            numeralMode={numeralMode}
-          />
-        )}
-
-        {/* Minimal Clean Footer */}
-        <footer className="mt-8 pt-4 border-t border-slate-900/80 text-center text-xs text-slate-500 flex flex-wrap items-center justify-center gap-2">
-          <span className="font-semibold text-slate-400">Mr.A 2D3D Live Myanmar</span>
-          <span className="text-slate-700">•</span>
-          <span>SET (Thailand) & Thai Government Lottery</span>
-        </footer>
-      </main>
-
-      {/* Slide-out Menu Drawer */}
-      <MenuDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        activeTab={activeTab}
-        onChangeTab={setActiveTab}
-        numeralMode={numeralMode}
-        onToggleNumeralMode={handleToggleNumeralMode}
-        soundEnabled={soundEnabled}
-        onToggleSound={handleToggleSound}
-        onRefresh={handleManualRefresh}
-        isRefreshing={isRefreshing}
-        serverTime={data2D?.server_time}
-      />
-
-    </div>
-  );
+  return <div className="mra-chat-app"><ChatHome data2D={data2D} data3D={data3D} loading2D={loading2D} loading3D={loading3D} error2D={error2D} error3D={error3D} numeralMode={numeralMode} onToggleNumeral={toggleNumeral} onRefresh={refresh} refreshing={isRefreshing} /><button className="sound-toggle" onClick={toggleSound} aria-label="အသံပြောင်းရန်">{soundEnabled ? 'SOUND ON' : 'SOUND OFF'}</button></div>;
 }

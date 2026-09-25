@@ -1,0 +1,77 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Activity, Bot, CalendarDays, ChevronRight, Clock3, Hash, Loader2, RefreshCw, Send, Sparkles, TrendingUp, Trophy, UserRound, Wifi } from 'lucide-react';
+import { Live2DData, NumeralMode, ThreeDResponse } from '../types';
+import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter';
+
+type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean; numeralMode: NumeralMode; onToggleNumeral: () => void; onRefresh: () => void; refreshing: boolean };
+type Entry = { id: string; role: 'assistant' | 'user'; text?: string; card?: '2d' | '3d' | 'sessions'; data?: unknown; time: string };
+
+const timeLabel = () => new Date().toLocaleTimeString('my-MM', { hour: 'numeric', minute: '2-digit' });
+const starterText = 'မင်္ဂလာပါ။ Mr.A Brain က 2D/3D Live data၊ ထီမှတ်တမ်းနဲ့ တွက်နည်းတွေကို တစ်နေရာတည်းမှာ ရှင်းပြပေးမယ်။ ဘာကိုကြည့်ချင်လဲ မေးလိုက်ပါ။';
+
+export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing }) => {
+  const [entries, setEntries] = useState<Entry[]>([{ id: 'welcome', role: 'assistant', text: starterText, time: timeLabel() }]);
+  const [input, setInput] = useState('');
+  const [thinking, setThinking] = useState(false);
+  const [last2D, setLast2D] = useState('');
+  const [last3D, setLast3D] = useState('');
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const feedRef = useRef<HTMLDivElement>(null);
+
+  const addEntry = (entry: Omit<Entry, 'id' | 'time'>) => setEntries((prev) => [...prev, { ...entry, id: `${Date.now()}-${Math.random()}`, time: timeLabel() }]);
+  const scrollDown = () => window.setTimeout(() => { if (feedRef.current) feedRef.current.scrollTo({ top: feedRef.current.scrollHeight, behavior: 'smooth' }); }, 40);
+
+  useEffect(() => { if (!data2D) return; const next = data2D.live?.twod || '--'; if (!last2D) { setLast2D(next); addEntry({ role: 'assistant', card: '2d', data: data2D, text: `2D Live data ရရှိပါပြီ။ လက်ရှိအခြေအနေ ${formatNumeral(next, numeralMode)} ကို ပြထားပါတယ်။` }); scrollDown(); return; } if (next !== '--' && last2D !== next) { setLast2D(next); addEntry({ role: 'assistant', card: '2d', data: data2D, text: `2D Live ရလဒ်အသစ် ${formatNumeral(next, numeralMode)} ထွက်လာပါပြီ။`, }); scrollDown(); } }, [data2D, last2D, numeralMode]);
+  useEffect(() => { const result = data3D?.data?.[0]?.result; if (!result) return; if (!last3D) { setLast3D(result); addEntry({ role: 'assistant', card: '3d', data: data3D, text: `3D နောက်ဆုံးရလဒ် ${formatNumeral(result, numeralMode)} ရရှိပါပြီ။` }); scrollDown(); return; } if (last3D !== result) { setLast3D(result); addEntry({ role: 'assistant', card: '3d', data: data3D, text: `3D ရလဒ်အသစ် ${formatNumeral(result, numeralMode)} ရရှိပါပြီ။` }); scrollDown(); } }, [data3D, last3D, numeralMode]);
+  useEffect(() => { scrollDown(); }, [entries.length, thinking]);
+
+  const answerFor = (question: string): { text: string; card?: Entry['card']; data?: unknown } => {
+    const q = question.toLowerCase();
+    if (q.includes('3d') || q.includes('၃လုံး') || q.includes('အာကာ')) return { text: '3D မှတ်တမ်းထဲက နောက်ဆုံးရလဒ်နဲ့ လက်ရှိရရှိထားတဲ့ data ကို ဒီကဒ်မှာ စုစည်းပြထားပါတယ်။', card: '3d', data: data3D };
+    if (q.includes('history') || q.includes('သမိုင်း') || q.includes('မှတ်တမ်း') || q.includes('ဇယား')) return { text: 'မေးထားတဲ့ မှတ်တမ်းကို အောက်က cards တွေထဲမှာ အချိန်စဉ်အလိုက် ဖတ်နိုင်ပါတယ်။', card: 'sessions', data: data2D };
+    if (q.includes('2d') || q.includes('၂လုံး') || q.includes('set') || q.includes('live') || q.includes('ရလဒ်')) return { text: 'လက်ရှိ 2D Live အခြေအနေကို အောက်က live card မှာ တိုက်ရိုက်ပြထားပါတယ်။', card: '2d', data: data2D };
+    return { text: 'မေးခွန်းကို လက်ခံရရှိပါပြီ။ Live data၊ 2D/3D ရလဒ်၊ မှတ်တမ်းနဲ့ တွက်နည်းအကြောင်း မေးနိုင်ပါတယ်။' };
+  };
+
+  const send = async (preset?: string) => {
+    const question = (preset || input).trim(); if (!question || thinking) return;
+    addEntry({ role: 'user', text: question }); setInput(''); setThinking(true); scrollDown();
+    const local = answerFor(question); addEntry({ role: 'assistant', text: local.text, card: local.card, data: local.data });
+    try {
+      const response = await fetch('/api/ai-chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: question, history: entries.filter((entry) => entry.text).slice(-8).map((entry) => ({ role: entry.role === 'user' ? 'user' : 'model', text: entry.text })) }) });
+      if (response.ok) { const json = await response.json(); if (json.reply) addEntry({ role: 'assistant', text: json.reply }); }
+    } catch { /* local card answer remains useful on free static hosting */ }
+    finally { setThinking(false); }
+  };
+
+  const live = data2D?.live;
+  const latest3D = data3D?.data?.[0];
+  const quick = ['ဒီနေ့ 2D Live ရလဒ်ပြပါ', '3D နောက်ဆုံးရလဒ်ပြပါ', '2D/3D မှတ်တမ်းဇယားပြပါ', 'SET တွက်နည်းရှင်းပြပါ'];
+  return <div className="chat-home-shell">
+    <header className="chat-topbar">
+      <div className="chat-brand" title="Mr.A 2D3D Live ပင်မစာမျက်နှာ"><span className="chat-brand-mark">A</span><div><strong>Mr.A</strong><span>2D3D Brain</span></div></div>
+      <div className="chat-live-strip" aria-label="Live 2D 3D summary">
+        <span className="chat-live-state"><i /> LIVE</span><span className="chat-live-item"><b>2D</b>{loading2D ? '···' : formatNumeral(live?.twod || '--', numeralMode)}</span><span className="chat-live-divider" /><span className="chat-live-item chat-live-3d"><b>3D</b>{loading3D ? '···' : formatNumeral(latest3D?.result || '--', numeralMode)}</span>
+      </div>
+      <div className="chat-top-actions"><button onClick={onToggleNumeral} title="ဂဏန်းပုံစံပြောင်း">{numeralMode === 'myanmar' ? '၁၂၃' : '123'}</button><button onClick={onRefresh} disabled={refreshing} title="Live data ပြန်ရယူရန်"><RefreshCw className={refreshing ? 'spin' : ''} /></button></div>
+    </header>
+    <main className="chat-main">
+      <section className="chat-hero"><div className="chat-hero-kicker"><span><Wifi /> secure live stream</span><span>မေးလို့ရ · ကြည့်လို့ရ · သိလို့ရ</span></div><h1>ရလဒ်တွေကို<br /><em>စကားပြောပြီး</em> ကြည့်မယ်</h1><p>Mr.A ကို မေးလိုက်ပါ။ သက်ဆိုင်ရာ Live table နဲ့ result card ကို chat ထဲမှာ အလိုအလျောက် ထုတ်ပြပေးမယ်။</p></section>
+      <section className="chat-surface" aria-label="Mr.A AI chat">
+        <div className="chat-surface-head"><div className="chat-agent"><span className="chat-agent-icon"><Bot /></span><div><strong>Mr.A Brain</strong><span><i /> Live data ကို နားထောင်နေတယ်</span></div></div><span className="chat-mode"><Sparkles /> context cards</span></div>
+        <div className="chat-feed" ref={feedRef}>
+          {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A Brain'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}</div></article>)}
+          {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A Brain စဉ်းစားနေတယ်...</div></div>}
+          {error2D && <div className="chat-system-note">2D live data ကို ခဏမရသေးပါ။ နောက်တစ်ကြိမ် refresh လုပ်ပြီး ပြန်စစ်ပေးမယ်။</div>}
+          {error3D && <div className="chat-system-note">3D data server ကို ချိတ်ဆက်နေပါတယ်။ ရရှိထားတဲ့ နောက်ဆုံးမှတ်တမ်းကို ပြထားပါတယ်။</div>}
+          <div ref={bottomRef} />
+        </div>
+        <div className="chat-composer-wrap"><div className="chat-quick-row">{quick.map((item) => <button key={item} onClick={() => send(item)} disabled={thinking}>{item}<ChevronRight /></button>)}</div><form className="chat-composer" onSubmit={(event) => { event.preventDefault(); send(); }}><input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Mr.A ကို မေးပါ… ဥပမာ ‘ဒီနေ့ 2D ရလဒ်ပြပါ’" /><button disabled={!input.trim() || thinking} aria-label="မေးခွန်းပို့ရန်"><Send /></button></form><p className="chat-disclaimer"><Activity /> API live data · AI answers may be approximate</p></div>
+      </section>
+    </main>
+  </div>;
+};
+
+function LiveCard({ data, numeralMode }: { data: Live2DData | null; numeralMode: NumeralMode }) { const live = data?.live; return <div className="context-card context-card-live"><div className="context-card-top"><span><Activity /> 2D LIVE TABLE</span><b>{formatMyanmarDateLabel(live?.date || '--', numeralMode)}</b></div><div className="live-card-grid"><div><small>ယခုထွက်ဂဏန်း</small><strong>{formatNumeral(live?.twod || '--', numeralMode)}</strong></div><div><small>SET INDEX</small><b>{formatNumeral(live?.set || '--', numeralMode)}</b></div><div><small>VALUE</small><b>{formatNumeral(live?.value || '--', numeralMode)}</b></div></div></div>; }
+function ThreeCard({ data, numeralMode }: { data: ThreeDResponse | null; numeralMode: NumeralMode }) { const item = data?.data?.[0]; return <div className="context-card context-card-3d"><div className="context-card-top"><span><Trophy /> 3D RESULT</span><b>နောက်ဆုံး draw</b></div><div className="three-card-main"><strong>{formatNumeral(item?.result || '--', numeralMode)}</strong><span><CalendarDays /> {item?.datetime || '--'}</span></div></div>; }
+function SessionsCard({ data, numeralMode }: { data: Live2DData | null; numeralMode: NumeralMode }) { return <div className="context-card context-card-sessions"><div className="context-card-top"><span><Hash /> 2D SESSIONS</span><b>ယနေ့ draw များ</b></div><div className="session-mini-grid">{(data?.result || []).slice(0, 4).map((item, index) => <div key={`${item.open_time}-${index}`}><small>{formatNumeral(item.open_time, numeralMode)}</small><strong>{formatNumeral(item.twod, numeralMode)}</strong><span><Clock3 /> {formatNumeral(item.open_time, numeralMode)}</span></div>)}</div></div>; }
