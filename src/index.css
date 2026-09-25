@@ -374,3 +374,33 @@ input, select, button { touch-action: manipulation; }
 @keyframes bot-blink { 0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)} } @keyframes bot-pulse { from{opacity:.55;transform:scale(.9)}to{opacity:1;transform:scale(1.1)} } @keyframes bot-bubble-in { from{opacity:0;transform:translateY(7px) scale(.88)}to{opacity:1;transform:translateY(0) scale(1)} } @keyframes bot-arm-left { from{transform:rotate(-35deg)}to{transform:rotate(35deg)} } @keyframes bot-arm-right { from{transform:rotate(35deg)}to{transform:rotate(-35deg)} } @keyframes bot-leg-left { from{transform:rotate(30deg)}to{transform:rotate(-30deg)} } @keyframes bot-leg-right { from{transform:rotate(-30deg)}to{transform:rotate(30deg)} } @keyframes bot-bounce { from{transform:translateY(0)}to{transform:translateY(-4px)} } @keyframes bot-dance-left { from{transform:rotate(110deg)}to{transform:rotate(160deg)} } @keyframes bot-dance-right { from{transform:rotate(-110deg)}to{transform:rotate(-160deg)} } @keyframes bot-dance-leg { from{transform:translateY(0) rotate(0)}to{transform:translateY(-8px) rotate(15deg)} } @keyframes bot-head-wiggle { from{transform:rotate(-12deg)}to{transform:rotate(12deg)} }
 @media (max-width:640px) { .mra-roaming-bot { right: .5rem; left: auto !important; top: auto !important; bottom: 4.2rem; transform: scale(.72) !important; transform-origin: bottom right; } .mra-bot-bubble { max-width: 9rem; font-size: .54rem; } }
 @media (prefers-reduced-motion:reduce) { .mra-roaming-bot,.mra-bot-button,.mra-bot-antenna::before,.mra-bot-chest b,.mra-bot-visor i,.mra-bot-bubble { animation:none!important; transition:none!important; } }
+
+
+/* Expressive pose pack: clean white/blue body with warm orange accents, inspired by the supplied reference direction. */
+.mra-bot-head { background: linear-gradient(145deg,#f8fafc,#cbd5e1); border-color:#64748b; }
+.mra-bot-head::before,.mra-bot-head::after { content:''; position:absolute; top:10px; width:8px; height:14px; border:2px solid #c87935; border-radius:50%; background:#f59e0b; }
+.mra-bot-head::before { left:-7px; }.mra-bot-head::after { right:-7px; }
+.mra-bot-antenna { background:#94a3b8; }.mra-bot-antenna::before { background:#f59e0b; border-color:#fed7aa; box-shadow:0 0 8px #f59e0b,0 0 18px rgba(245,158,11,.65); }
+.mra-bot-arm { background:linear-gradient(180deg,#f8fafc,#94a3b8); border-color:#64748b; }
+.mra-bot-chest { width:42px; height:40px; border-color:#64748b; background:linear-gradient(145deg,#f8fafc,#94a3b8); clip-path:polygon(50% 0,100% 18%,88% 100%,12% 100%,0 18%); border-radius:8px; }
+.mra-bot-chest b { background:#38bdf8; border-color:#e0f2fe; box-shadow:0 0 8px #38bdf8; }
+.mra-bot-chest small { color:#164e63; }
+.mra-bot-leg { background:linear-gradient(180deg,#38bdf8,#1e3a8a); border-color:#0f2d54; }
+.mra-bot-leg em { background:#f59e0b; box-shadow:0 0 7px #f59e0b; }
+.mra-bot-waving .mra-bot-arm-right { animation: bot-wave .42s infinite alternate ease-in-out; transform-origin:bottom center; }
+.mra-bot-waving .mra-bot-arm-left { transform:rotate(8deg); }
+.mra-bot-waving .mra-bot-visor i { background:#34d399; box-shadow:0 0 10px #34d399; }
+.mra-bot-pointing .mra-bot-arm-right { transform:rotate(-72deg); transform-origin:bottom center; }
+.mra-bot-pointing .mra-bot-arm-right::after { content:''; display:block; width:7px; height:15px; margin:-10px 0 0 1px; border-radius:5px; background:#f8fafc; transform:rotate(-25deg); }
+.mra-bot-pointing .mra-bot-visor i { background:#fbbf24; box-shadow:0 0 10px #fbbf24; }
+.mra-bot-thinking .mra-bot-head { transform:rotate(-8deg) translateY(2px); }
+.mra-bot-thinking .mra-bot-arm-left { transform:rotate(42deg); transform-origin:bottom center; }
+.mra-bot-thinking .mra-bot-arm-right { transform:rotate(-42deg); transform-origin:bottom center; }
+.mra-bot-thinking .mra-bot-visor i { height:5px; margin-top:4px; background:#a78bfa; box-shadow:0 0 9px #a78bfa; }
+.mra-bot-confused .mra-bot-head { transform:rotate(9deg); }
+.mra-bot-confused .mra-bot-arm-left { transform:rotate(-28deg); }.mra-bot-confused .mra-bot-arm-right { transform:rotate(20deg); }
+.mra-bot-confused .mra-bot-visor i:first-child { height:5px; transform:translateY(3px) rotate(12deg); }.mra-bot-confused .mra-bot-visor i:last-child { height:5px; transform:translateY(-2px) rotate(-12deg); }
+.mra-bot-fallen { transform-origin:50% 100%; }.mra-bot-fallen .mra-bot-button { transform:rotate(78deg) translate(12px,10px); }.mra-bot-fallen .mra-bot-bubble { transform:rotate(-78deg) translate(-14px,34px); }
+.mra-bot-dancing .mra-bot-chest b { background:#fbbf24; box-shadow:0 0 10px #fbbf24; }
+@keyframes bot-wave { from{transform:rotate(-18deg)} to{transform:rotate(-70deg)} }
+@media (max-width:640px) { .mra-bot-head::before,.mra-bot-head::after { display:none; } }

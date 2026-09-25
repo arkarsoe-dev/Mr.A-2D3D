@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Live2DData, TabType, ThreeDResponse } from '../types';
 
 type Props = { activeTab: TabType; data: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean };
-type BotAction = 'idle' | 'walking' | 'resting' | 'peeking' | 'dancing' | 'thinking';
+type BotAction = 'idle' | 'walking' | 'resting' | 'peeking' | 'dancing' | 'thinking' | 'waving' | 'pointing' | 'confused' | 'fallen';
 type BrainEvent = 'focus' | 'loading' | 'result2d' | 'result3d' | 'error' | 'tab' | 'click';
 
 const defaultPosition = { x: 42, y: 8 };
@@ -18,6 +18,7 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
   const last3D = useRef('');
   const messageTimer = useRef<number | null>(null);
   const actionTimer = useRef<number | null>(null);
+  const poseIndex = useRef(0);
 
   const speak = useCallback((text: string, duration = 3200) => {
     setMessage(text);
@@ -43,8 +44,8 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
     }
     if (event === 'loading') { moveTo({ x: Math.max(42, window.innerWidth * .32), y: 92 }, 'thinking', text || 'ဒေတာကို စစ်ဆေးနေတယ်...', 2800); return; }
     if (event === 'result2d' || event === 'result3d') { moveTo({ x: Math.max(42, window.innerWidth * .42), y: 112 }, 'dancing', text || 'ရလဒ်အသစ် ထွက်လာပြီ!', 4200); return; }
-    if (event === 'error') { moveTo({ x: 44, y: 70 }, 'resting', text || 'ခဏလေးနော်၊ ဒေတာ ပြန်ရှာနေတယ်', 3600); return; }
-    if (event === 'tab') { moveTo({ x: 52, y: 78 }, 'walking', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
+    if (event === 'error') { moveTo({ x: 44, y: 70 }, 'confused', text || 'ခဏလေးနော်၊ ဒေတာ ပြန်ရှာနေတယ်', 3600); return; }
+    if (event === 'tab') { moveTo({ x: 52, y: 78 }, 'waving', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
     moveTo(position, 'dancing', text || 'ကံကောင်းပါစေ!', 2600);
   }, [moveTo, position]);
 
@@ -102,7 +103,17 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
 
   useEffect(() => () => { if (messageTimer.current) window.clearTimeout(messageTimer.current); if (actionTimer.current) window.clearTimeout(actionTimer.current); }, []);
 
-  const handleClick = () => brain('click', 'ကံကောင်းပါစေ! ခေါ်လိုက်တာလား?');
+  const handleClick = () => {
+    const poses: Array<{ action: BotAction; message: string }> = [
+      { action: 'waving', message: 'ဟယ်လို! ကံကောင်းပါစေ' },
+      { action: 'pointing', message: 'ဒီမှာ ရလဒ်တွေ ရှိတယ်' },
+      { action: 'fallen', message: 'အိုး... ခဏနားလိုက်ဦးမယ်' },
+      { action: 'dancing', message: 'ရလဒ်ထွက်ပြီ! ကကြမယ်' },
+    ];
+    const pose = poses[poseIndex.current % poses.length];
+    poseIndex.current += 1;
+    moveTo(position, pose.action, pose.message, 2600);
+  };
   const scale = action === 'peeking' ? 1.12 : 1;
   return <div className={`mra-roaming-bot mra-bot-${action}`} style={{ left: position.x, top: position.y, transform: `scale(${scale})` }}>
     {message && <span className="mra-bot-bubble">{message}</span>}
