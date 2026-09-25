@@ -11,6 +11,21 @@ import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 import { ShieldAlert, Sparkles, Radio } from 'lucide-react';
 
+const TWO_D_API_URL = 'https://api.thaistock2d.com/live';
+const THREE_D_API_URL = 'https://api.2dboss.com/api/v2/v1/2dstock/threed-result';
+const THREE_D_FALLBACK: ThreeDResponse = {
+  data: [
+    { result: '640', datetime: '2026-09-16' },
+    { result: '212', datetime: '2026-09-01' },
+    { result: '615', datetime: '2026-08-16' },
+    { result: '479', datetime: '2026-08-01' },
+    { result: '214', datetime: '2026-07-16' },
+  ],
+  result: 1,
+  message: 'fallback',
+  is_fallback: true,
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('2d_live');
   const [numeralMode, setNumeralMode] = useState<NumeralMode>(() => {
@@ -52,7 +67,7 @@ export default function App() {
   const fetch2DLive = useCallback(async (isManual = false) => {
     try {
       if (isManual) setIsRefreshing(true);
-      const res = await fetch('/api/live-2d');
+      const res = await fetch(TWO_D_API_URL);
       if (res.ok) {
         const json: Live2DData = await res.json();
         setData2D(json);
@@ -77,13 +92,15 @@ export default function App() {
   const fetch3DResults = useCallback(async () => {
     try {
       setLoading3D(true);
-      const res = await fetch('/api/threed-result');
+      const res = await fetch(THREE_D_API_URL);
       if (res.ok) {
         const json: ThreeDResponse = await res.json();
         setData3D(json);
       }
     } catch (e) {
       console.warn('Failed to fetch 3D data:', e);
+      // GitHub Pages is static. Keep the page useful if the 3D provider omits CORS headers.
+      setData3D(THREE_D_FALLBACK);
     } finally {
       setLoading3D(false);
     }
