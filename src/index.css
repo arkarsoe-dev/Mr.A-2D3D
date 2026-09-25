@@ -375,3 +375,77 @@ main { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   .mra-mascot, .mra-mascot-antenna, .mra-mascot-eye, .mra-mascot-smile, .mra-mascot-arm-right { animation: none; }
 }
+
+
+/* Context-aware Mr.A companion: moves around the viewport with live mood */
+.mra-companion {
+  position: fixed;
+  right: 1rem;
+  bottom: 1.25rem;
+  z-index: 32;
+  display: flex;
+  align-items: flex-end;
+  gap: .35rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: top 650ms cubic-bezier(.23,1,.32,1), right 650ms cubic-bezier(.23,1,.32,1), bottom 650ms cubic-bezier(.23,1,.32,1), left 650ms cubic-bezier(.23,1,.32,1);
+}
+.mra-companion-bubble {
+  max-width: 9rem;
+  padding: .35rem .55rem;
+  border: 1px solid rgba(52, 211, 153, .35);
+  border-radius: .75rem .75rem .2rem .75rem;
+  background: rgba(5, 15, 28, .92);
+  color: #d1fae5;
+  font-size: .62rem;
+  font-weight: 800;
+  line-height: 1.35;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, .35), 0 0 12px rgba(52, 211, 153, .12);
+  opacity: .92;
+  transform: translateY(-.45rem);
+  transition: transform .25s ease, opacity .25s ease, border-color .25s ease;
+}
+.mra-companion:hover .mra-companion-bubble,
+.mra-companion.is-interacting .mra-companion-bubble { opacity: 1; transform: translateY(-.7rem) scale(1.04); }
+.mra-companion .mra-mascot { transform-origin: bottom center; }
+.mra-companion-excited { right: 1.1rem; bottom: 1.4rem; }
+.mra-companion-excited .mra-companion-bubble { border-color: rgba(251, 191, 36, .65); color: #fde68a; }
+.mra-companion-excited .mra-mascot { animation: mascot-celebrate 1.15s ease-in-out infinite; }
+.mra-companion-waiting { left: 1rem; top: 22%; right: auto; bottom: auto; }
+.mra-companion-waiting .mra-companion-bubble { border-color: rgba(148, 163, 184, .45); color: #cbd5e1; }
+.mra-companion-waiting .mra-mascot { animation: mascot-peek 3.2s ease-in-out infinite; }
+.mra-companion-searching { right: 1rem; top: 39%; bottom: auto; }
+.mra-companion-searching .mra-companion-bubble { border-color: rgba(251, 191, 36, .45); color: #fde68a; }
+.mra-companion-searching .mra-mascot { animation: mascot-search 2.1s ease-in-out infinite; }
+.mra-companion-social { left: 1rem; bottom: 18%; right: auto; }
+.mra-companion-social .mra-companion-bubble { border-color: rgba(96, 165, 250, .5); color: #bfdbfe; }
+.mra-companion-social .mra-mascot { animation: mascot-wave-big 1.5s ease-in-out infinite; }
+.mra-companion-thinking { right: 1rem; top: 44%; bottom: auto; }
+.mra-companion-thinking .mra-companion-bubble { border-color: rgba(129, 140, 248, .5); color: #c7d2fe; }
+.mra-companion-thinking .mra-mascot { animation: mascot-think 2.6s ease-in-out infinite; }
+.mra-companion-working { left: 1rem; top: 51%; right: auto; bottom: auto; }
+.mra-companion-working .mra-companion-bubble { border-color: rgba(192, 132, 252, .5); color: #e9d5ff; }
+.mra-companion-working .mra-mascot { animation: mascot-work 1.8s ease-in-out infinite; }
+.mra-companion-watching { right: 1rem; top: 27%; bottom: auto; }
+.mra-companion-watching .mra-companion-bubble { border-color: rgba(251, 191, 36, .5); color: #fde68a; }
+.mra-companion-watching .mra-mascot { animation: mascot-watch 2.4s ease-in-out infinite; }
+.mra-companion.is-interacting .mra-mascot { animation: mascot-jump .7s ease-out 1; }
+@keyframes mascot-celebrate { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-12px) rotate(5deg); } }
+@keyframes mascot-peek { 0%, 100% { transform: translateX(0) rotate(-2deg); } 50% { transform: translateX(7px) rotate(3deg); } }
+@keyframes mascot-search { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg) translateY(-3px); } }
+@keyframes mascot-wave-big { 0%, 100% { transform: rotate(-4deg); } 35% { transform: rotate(5deg) translateY(-4px); } 70% { transform: rotate(-2deg); } }
+@keyframes mascot-think { 0%, 100% { transform: rotate(2deg); } 50% { transform: rotate(-8deg) translateY(-3px); } }
+@keyframes mascot-work { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px) rotate(4deg); } }
+@keyframes mascot-watch { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-8px) rotate(-3deg); } }
+@keyframes mascot-jump { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(-15px) scale(1.08); } 100% { transform: translateY(0) scale(1); } }
+@media (max-width: 640px) {
+  .mra-companion { transform: scale(.82); transform-origin: bottom right; }
+  .mra-companion-waiting { left: -.15rem; }
+  .mra-companion-social, .mra-companion-working { left: -.15rem; }
+  .mra-companion-bubble { max-width: 7.5rem; font-size: .58rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mra-companion, .mra-companion .mra-mascot { transition: none; animation: none; }
+}

@@ -8,6 +8,7 @@ import { TwoDHistory } from './components/TwoDHistory';
 import { DreamCalculator } from './components/DreamCalculator';
 import { DeploymentModal } from './components/DeploymentModal';
 import { MenuDrawer } from './components/MenuDrawer';
+import { MascotCompanion } from './components/MascotCompanion';
 import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 
@@ -140,6 +141,8 @@ export default function App() {
         onChangeTab={setActiveTab}
         onOpenDrawer={() => setIsDrawerOpen(true)}
       />
+
+      <MascotCompanion activeTab={activeTab} data={data2D} />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-5">
