@@ -50,4 +50,14 @@ export interface ChatMessage {
   avatarColor?: string;
 }
 
-export type TabType = '2d_live' | '3d_result' | 'chat' | 'history' | 'tools';
+export type ThreeDSubMode = 'arkarsoe' | 'monthlyCalendar' | 'list';
+
+export type TabType =
+  | '2d_live'
+  | '3d_result'
+  | '3d_arkarsoe'
+  | '3d_calendar'
+  | '3d_history'
+  | 'group_chat'
+  | 'ai_chat'
+  | 'tools';

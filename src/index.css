@@ -19,6 +19,15 @@
   }
 }
 
+@keyframes pulseGlowGreen {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.4), inset 0 0 12px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(16, 185, 129, 0.85), inset 0 0 22px rgba(16, 185, 129, 0.45);
+  }
+}
+
 @keyframes liveGlow {
   0%, 100% {
     opacity: 1;
@@ -32,6 +41,10 @@
 
 .animate-pulse-glow {
   animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+.animate-pulse-glow-green {
+  animation: pulseGlowGreen 2.2s infinite ease-in-out;
 }
 
 .animate-live-glow {
@@ -54,107 +67,170 @@
   background: #334155;
 }
 
-
-/* Mr.A visual refresh — behavior and component structure remain unchanged */
-:root {
-  --mra-ink: #0a1020;
-  --mra-panel: #111a2d;
-  --mra-panel-soft: #16233a;
-  --mra-line: rgba(173, 197, 228, .16);
-  --mra-text: #edf4ff;
-  --mra-muted: #91a4bd;
-  --mra-lime: #c9f36c;
-  --mra-cyan: #74dbe3;
-  --mra-violet: #b99aff;
+/* Arkar Soe Pro Calendar Table & UI Styles */
+.arkar-table-viewport {
+  position: relative;
+  overflow: auto;
+  touch-action: pan-x pan-y;
+  user-select: none;
 }
 
-html { background: var(--mra-ink); }
-body {
-  min-width: 320px;
-  color: var(--mra-text);
-  background:
-    radial-gradient(circle at 8% 5%, rgba(116, 219, 227, .12), transparent 25rem),
-    radial-gradient(circle at 91% 19%, rgba(185, 154, 255, .11), transparent 27rem),
-    linear-gradient(145deg, #07101f 0%, #0b1427 48%, #0a1020 100%);
-  background-attachment: fixed;
-  font-family: 'Padauk', 'Noto Sans Myanmar', system-ui, sans-serif;
+.arkar-zoom-wrapper {
+  transform-origin: 0 0;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  width: max-content;
 }
-#root { min-height: 100vh; background: transparent; }
-.font-num, .font-mono, [class*="font-num"] { font-family: 'Outfit', 'Padauk', monospace; letter-spacing: .02em; }
-::selection { color: #08111e; background: var(--mra-lime); }
 
-/* Existing Tailwind surfaces get a cooler glass-panel treatment. */
-[class*="bg-slate-950"] { background-color: rgba(7, 14, 28, .78) !important; }
-[class*="bg-slate-900"] { background-color: rgba(17, 28, 49, .82) !important; }
-[class*="border-slate-800"] { border-color: var(--mra-line) !important; }
-[class*="text-slate-100"], [class*="text-slate-200"] { color: var(--mra-text) !important; }
-[class*="text-slate-300"] { color: #c0cede !important; }
-[class*="text-slate-400"], [class*="text-slate-500"] { color: var(--mra-muted) !important; }
-[class*="text-amber-400"], [class*="text-amber-300"] { color: var(--mra-lime) !important; }
-[class*="bg-amber-500"] { background-color: rgba(201, 243, 108, .14) !important; }
-[class*="border-amber-500"] { border-color: rgba(201, 243, 108, .38) !important; }
-[class*="shadow-amber"] { --tw-shadow-color: rgba(201, 243, 108, .12) !important; }
-
-/* Main app cards keep the supplied layout but feel more editorial and layered. */
-main > div, main [class*="rounded-2xl"], main [class*="rounded-xl"] {
-  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
-}
-main [class*="rounded-2xl"] { box-shadow: 0 24px 70px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255,255,255,.035); }
-main [class*="rounded-xl"]:hover { border-color: rgba(201, 243, 108, .34) !important; }
-
-/* History/result tables: stronger hierarchy, zebra rhythm, and readable numerals. */
-table {
-  border-collapse: separate !important;
+.arkar-table {
+  border-collapse: separate;
   border-spacing: 0;
-  overflow: hidden;
-  border: 1px solid rgba(173, 197, 228, .18) !important;
-  border-radius: 16px;
-  background: linear-gradient(145deg, rgba(19, 31, 54, .94), rgba(10, 18, 34, .96));
-  box-shadow: 0 20px 55px rgba(0, 0, 0, .22);
+  width: max-content;
 }
-thead { background: linear-gradient(90deg, rgba(116, 219, 227, .11), rgba(185, 154, 255, .11)) !important; }
-thead tr { border-bottom: 1px solid rgba(173, 197, 228, .2) !important; }
-thead th {
-  color: #bcd0e5 !important;
-  background: transparent !important;
-  font-family: 'Outfit', 'Padauk', sans-serif;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  letter-spacing: .08em;
-  text-transform: none;
-}
-tbody tr { background: transparent !important; transition: background 160ms ease; }
-tbody tr:nth-child(even) { background: rgba(116, 219, 227, .035) !important; }
-tbody tr:hover { background: rgba(201, 243, 108, .09) !important; }
-tbody td { border-color: rgba(173, 197, 228, .1) !important; color: #aec0d5 !important; }
-tbody td .font-num, tbody td [class*="text-xl"], tbody td [class*="text-lg"] { color: var(--mra-lime) !important; text-shadow: 0 0 18px rgba(201, 243, 108, .17); }
-table th:first-child, table td:first-child { padding-left: 18px !important; }
-table th:last-child, table td:last-child { padding-right: 18px !important; }
 
-/* Wide table remains scrollable on small screens without breaking the ZIP layout. */
-.overflow-x-auto { scrollbar-color: rgba(201,243,108,.5) rgba(7,14,28,.7); scrollbar-width: thin; }
-.overflow-x-auto::-webkit-scrollbar { height: 7px; }
-.overflow-x-auto::-webkit-scrollbar-track { background: rgba(7,14,28,.8); }
-.overflow-x-auto::-webkit-scrollbar-thumb { background: rgba(201,243,108,.48); border-radius: 99px; }
-
-/* Header becomes a calm glass bar rather than a flat black strip. */
-header.sticky {
-  background: rgba(7, 14, 28, .78) !important;
-  border-bottom-color: rgba(201, 243, 108, .22) !important;
-  box-shadow: 0 12px 35px rgba(0,0,0,.24) !important;
+.arkar-table th, .arkar-table td {
+  min-width: 58px;
+  height: 44px;
+  text-align: center;
+  position: relative;
+  padding: 0;
 }
+
+.arkar-thead-th {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: #0b1120;
+  border-bottom: 1px solid #1e293b;
+  font-weight: 800 !important;
+  backdrop-filter: blur(8px);
+}
+
+.arkar-sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 45;
+  background-color: #0b1120 !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  border-right: 1px solid #1e293b;
+  font-weight: 800 !important;
+}
+
+.arkar-sticky-corner {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  background-color: #090d16 !important;
+}
+
+.arkar-cell-box {
+  position: absolute;
+  inset: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.18s ease;
+  box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.arkar-cell-box.selected {
+  border: 2px solid #38bdf8 !important;
+  z-index: 40;
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
+}
+
+.arkar-cell-box.highlight-pulse {
+  animation: arkar-pulse-ring 1.8s infinite;
+}
+
+@keyframes arkar-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8); }
+  70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.arkar-connection-line {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: 2.5;
+  stroke-dasharray: 6;
+  animation: arkar-dash 30s linear infinite;
+  opacity: 0.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes arkar-dash {
+  to { stroke-dashoffset: -1000; }
+}
+
+.arkar-comment-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #0f172a;
+}
+
+
+/* Mr.A upgrade: fit every control inside the viewport on phone and desktop. */
+html, body, #root { min-width: 320px; min-height: 100%; }
+body { overflow-x: hidden; background: #07101d; }
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+.mra-bottom-nav {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 45;
+  display: flex;
+  justify-content: space-around;
+  gap: .35rem;
+  padding: .45rem .6rem calc(.45rem + env(safe-area-inset-bottom));
+  background: rgba(5, 12, 24, .94);
+  border-top: 1px solid rgba(245, 158, 11, .2);
+  backdrop-filter: blur(16px);
+}
+.mra-icon-nav {
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: #8292a8;
+  border: 1px solid transparent;
+  border-radius: .85rem;
+  transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+.mra-icon-nav:hover { color: #fbbf24; background: rgba(245,158,11,.08); }
+.mra-icon-nav.is-active { color: #fbbf24; background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.3); transform: translateY(-2px); }
+
+/* Keep chat panels inside the available screen rather than forcing page scrolling. */
+.mra-chat-panel { min-height: min(650px, calc(100dvh - 150px)); max-height: calc(100dvh - 120px); }
+main { min-width: 0; }
 
 @media (max-width: 640px) {
-  body { background: linear-gradient(155deg, #07101f 0%, #0b1529 60%, #08101f 100%); }
-  main { padding-bottom: 5.5rem; }
-  main [class*="rounded-2xl"] { border-radius: 18px !important; }
-  table { min-width: 680px; border-radius: 13px; }
-  thead th { font-size: 9px !important; }
-  tbody td { padding-top: 14px !important; padding-bottom: 14px !important; }
+  header.sticky { padding-top: env(safe-area-inset-top); }
+  header.sticky > div { padding-left: .45rem; padding-right: .45rem; }
+  header.sticky nav { gap: .15rem !important; }
+  header.sticky nav button, header.sticky > div button { padding: .55rem !important; }
+  header.sticky svg { width: 1.05rem; height: 1.05rem; }
+  main { padding-bottom: 5.4rem; }
+  main > footer { margin-bottom: 4.5rem; }
+  .mra-chat-panel { min-height: calc(100dvh - 145px); max-height: calc(100dvh - 120px); }
 }
 
 @media (min-width: 641px) {
-  main { padding-top: 1.8rem; }
-  main > div > div:first-child { border-color: rgba(116, 219, 227, .17) !important; }
-  table { border-radius: 18px; }
+  .mra-bottom-nav { display: none; }
+  main { padding-bottom: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }

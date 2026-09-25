@@ -3,28 +3,13 @@ import { Header } from './components/Header';
 import { Live2DCard } from './components/Live2DCard';
 import { ThreeDSection } from './components/ThreeDSection';
 import { CommunityChat } from './components/CommunityChat';
-import { TwoDHistory } from './components/TwoDHistory';
+import { AiChat } from './components/AiChat';
 import { DreamCalculator } from './components/DreamCalculator';
-import { BottomNav } from './components/BottomNav';
 import { DeploymentModal } from './components/DeploymentModal';
+import { MenuDrawer } from './components/MenuDrawer';
+import { BottomNav } from './components/BottomNav';
 import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
 import { playNotificationSound } from './utils/numberConverter';
-import { ShieldAlert, Sparkles, Radio } from 'lucide-react';
-
-const TWO_D_API_URL = 'https://api.thaistock2d.com/live';
-const THREE_D_API_URL = 'https://api.2dboss.com/api/v2/v1/2dstock/threed-result';
-const THREE_D_FALLBACK: ThreeDResponse = {
-  data: [
-    { result: '640', datetime: '2026-09-16' },
-    { result: '212', datetime: '2026-09-01' },
-    { result: '615', datetime: '2026-08-16' },
-    { result: '479', datetime: '2026-08-01' },
-    { result: '214', datetime: '2026-07-16' },
-  ],
-  result: 1,
-  message: 'fallback',
-  is_fallback: true,
-};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('2d_live');
@@ -43,6 +28,7 @@ export default function App() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const prevTwodRef = useRef<string>('');
 
@@ -67,7 +53,7 @@ export default function App() {
   const fetch2DLive = useCallback(async (isManual = false) => {
     try {
       if (isManual) setIsRefreshing(true);
-      const res = await fetch(TWO_D_API_URL);
+      const res = await fetch('/api/live-2d');
       if (res.ok) {
         const json: Live2DData = await res.json();
         setData2D(json);
@@ -92,15 +78,13 @@ export default function App() {
   const fetch3DResults = useCallback(async () => {
     try {
       setLoading3D(true);
-      const res = await fetch(THREE_D_API_URL);
+      const res = await fetch('/api/threed-result');
       if (res.ok) {
         const json: ThreeDResponse = await res.json();
         setData3D(json);
       }
     } catch (e) {
       console.warn('Failed to fetch 3D data:', e);
-      // GitHub Pages is static. Keep the page useful if the 3D provider omits CORS headers.
-      setData3D(THREE_D_FALLBACK);
     } finally {
       setLoading3D(false);
     }
@@ -133,32 +117,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans pb-24 selection:bg-amber-500 selection:text-slate-950">
-      {/* Top Header */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans pb-8 selection:bg-amber-500 selection:text-slate-950">
+      {/* Top Header with Brand Logo & Compact Tabs & Menu Drawer button */}
       <Header
-        serverTime={data2D?.server_time || ''}
-        numeralMode={numeralMode}
-        onToggleNumeralMode={handleToggleNumeralMode}
-        soundEnabled={soundEnabled}
-        onToggleSound={handleToggleSound}
-        onRefresh={handleManualRefresh}
-        isRefreshing={isRefreshing}
-        onOpenDeployModal={() => setIsDeployModalOpen(true)}
+        activeTab={activeTab}
+        onChangeTab={setActiveTab}
+        onOpenDrawer={() => setIsDrawerOpen(true)}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Top Ticker Marquee / Highlights */}
-        <div className="mb-4 overflow-hidden rounded-xl bg-slate-900/60 border border-slate-800/80 px-3 py-2 flex items-center gap-2 text-xs">
-          <span className="flex-shrink-0 flex items-center gap-1 font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            သတင်းတို:
-          </span>
-          <div className="truncate text-slate-300">
-            Mr.A 2D3D Live မှ ကြိုဆိုပါသည် • ထိုင်းစတော့အိတ်ချိန်း တရားဝင် SET ဒေတာ တိုက်ရိုက်ထုတ်လွှင့်မှု • 3D ရလဒ်များကို လစဉ် ၁ ရက် နှင့် ၁၆ ရက်တွင် ထုတ်ပြန်ပေးပါသည်
-          </div>
-        </div>
-
+      <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-5">
         {/* Tab Views */}
         {activeTab === '2d_live' && (
           <Live2DCard
@@ -168,24 +136,68 @@ export default function App() {
           />
         )}
 
+        {/* 3D Result Screens (Splitted into specialized cleaner views) */}
         {activeTab === '3d_result' && (
           <ThreeDSection
             items={data3D?.data || []}
             loading={loading3D}
             numeralMode={numeralMode}
+            initialMode="arkarsoe"
+            onModeChange={(mode) => {
+              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
+              else if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
+              else if (mode === 'list') setActiveTab('3d_history');
+            }}
           />
         )}
 
-        {activeTab === 'chat' && (
+        {activeTab === '3d_arkarsoe' && (
+          <ThreeDSection
+            items={data3D?.data || []}
+            loading={loading3D}
+            numeralMode={numeralMode}
+            initialMode="arkarsoe"
+            onModeChange={(mode) => {
+              if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
+              else if (mode === 'list') setActiveTab('3d_history');
+            }}
+          />
+        )}
+
+        {activeTab === '3d_calendar' && (
+          <ThreeDSection
+            items={data3D?.data || []}
+            loading={loading3D}
+            numeralMode={numeralMode}
+            initialMode="monthlyCalendar"
+            onModeChange={(mode) => {
+              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
+              else if (mode === 'list') setActiveTab('3d_history');
+            }}
+          />
+        )}
+
+        {activeTab === '3d_history' && (
+          <ThreeDSection
+            items={data3D?.data || []}
+            loading={loading3D}
+            numeralMode={numeralMode}
+            initialMode="list"
+            onModeChange={(mode) => {
+              if (mode === 'arkarsoe') setActiveTab('3d_arkarsoe');
+              else if (mode === 'monthlyCalendar') setActiveTab('3d_calendar');
+            }}
+          />
+        )}
+
+        {activeTab === 'group_chat' && (
           <CommunityChat
             numeralMode={numeralMode}
           />
         )}
 
-        {activeTab === 'history' && (
-          <TwoDHistory
-            numeralMode={numeralMode}
-          />
+        {activeTab === 'ai_chat' && (
+          <AiChat numeralMode={numeralMode} />
         )}
 
         {activeTab === 'tools' && (
@@ -194,20 +206,11 @@ export default function App() {
           />
         )}
 
-        {/* Footer Disclaimer */}
-        <footer className="mt-12 pt-6 border-t border-slate-900 text-center text-xs text-slate-500 space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <span className="w-6 h-6 rounded bg-amber-500 flex items-center justify-center font-black text-slate-950 text-xs">
-              A
-            </span>
-            <span className="font-bold text-slate-300">Mr.A 2D3D Live Myanmar</span>
-          </div>
-          <p>
-            ဒေတာအရင်းအမြစ်များ: SET (Stock Exchange of Thailand) & Thailand Government Lottery
-          </p>
-          <p className="text-[11px] text-slate-600">
-            © 2026 Mr.A 2D3D. မူပိုင်ခွင့်များအားလုံး လက်ဝယ်ရှိသည်။
-          </p>
+        {/* Minimal Clean Footer */}
+        <footer className="mt-8 pt-4 border-t border-slate-900/80 text-center text-xs text-slate-500 flex flex-wrap items-center justify-center gap-2">
+          <span className="font-semibold text-slate-400">Mr.A 2D3D Live Myanmar</span>
+          <span className="text-slate-700">•</span>
+          <span>SET (Thailand) & Thai Government Lottery</span>
         </footer>
       </main>
 
@@ -217,11 +220,24 @@ export default function App() {
         onClose={() => setIsDeployModalOpen(false)}
       />
 
-      {/* Bottom Sticky Navigation */}
-      <BottomNav
+      {/* Slide-out Menu Drawer */}
+      <MenuDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
         activeTab={activeTab}
         onChangeTab={setActiveTab}
+        numeralMode={numeralMode}
+        onToggleNumeralMode={handleToggleNumeralMode}
+        soundEnabled={soundEnabled}
+        onToggleSound={handleToggleSound}
+        onRefresh={handleManualRefresh}
+        isRefreshing={isRefreshing}
+        onOpenDeployModal={() => setIsDeployModalOpen(true)}
+        serverTime={data2D?.server_time}
+        data2D={data2D}
       />
+
+      <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
     </div>
   );
 }

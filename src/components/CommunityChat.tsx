@@ -85,7 +85,7 @@ export const CommunityChat: React.FC<CommunityChatProps> = ({ numeralMode }) => 
   };
 
   return (
-    <div className="rounded-2xl bg-slate-900/90 border border-amber-500/20 shadow-xl overflow-hidden flex flex-col h-[650px]">
+    <div className="mra-chat-panel rounded-2xl bg-slate-900/90 border border-amber-500/20 shadow-xl overflow-hidden flex flex-col h-[650px]">
       {/* Chat Room Header */}
       <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
