@@ -30,18 +30,21 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
     const logo = document.querySelector('[title="Mr.A 2D3D Live ပင်မစာမျက်နှာ"]');
     if (!logo) return defaultPosition;
     const rect = logo.getBoundingClientRect();
+    if (window.innerWidth <= 640) return { x: Math.max(8, rect.left), y: Math.max(60, rect.bottom + 4) };
     return { x: Math.max(8, rect.right + 5), y: Math.max(28, rect.top + 2) };
   }, []);
 
   const moveTo = useCallback((next: { x: number; y: number }, nextAction: BotAction, text: string, duration = 3000) => {
-    const x = Math.max(8, Math.min(window.innerWidth - 108, next.x));
-    const y = Math.max(8, Math.min(window.innerHeight - 180, next.y));
+    const mobile = window.innerWidth <= 640;
+    const target = mobile ? logoAnchor() : next;
+    const x = Math.max(8, Math.min(window.innerWidth - (mobile ? 76 : 108), target.x));
+    const y = Math.max(8, Math.min(window.innerHeight - (mobile ? 92 : 180), target.y));
     setPosition({ x, y });
     setAction(nextAction);
     speak(text, duration);
     if (actionTimer.current) window.clearTimeout(actionTimer.current);
     actionTimer.current = window.setTimeout(() => setAction('idle'), Math.min(duration, 3600));
-  }, [speak]);
+  }, [logoAnchor, speak]);
 
   const brain = useCallback((event: BrainEvent, text?: string, target?: HTMLElement | null) => {
     if (event === 'focus' && target) {
