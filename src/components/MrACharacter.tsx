@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Lottie } from 'lottie-react';
 import { Live2DData, TabType, ThreeDResponse } from '../types';
-import robotAsset from '../assets/MrA-LuckyRobot.svg';
+import animationData from '../assets/MrA-LottieAnimation.json';
 
 type Props = { activeTab: TabType; data: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean };
 type Mood = 'happy' | 'watching' | 'thinking' | 'sleepy' | 'surprised';
@@ -32,6 +33,12 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, loading2D, load
 
   return <button type="button" className={`mra-companion mra-firefly mra-firefly-${mood}`} onClick={onClick} title={message} aria-label={`Mr.A Lucky Robot: ${message}`}>
     <span className="mra-companion-bubble">{message}</span>
-    <img className="mra-firefly-art" src={robotAsset} alt="Mr.A Lucky Robot mascot" draggable="false" />
+    <Lottie
+      className="mra-firefly-art mra-lottie-art"
+      src={animationData}
+      loop
+      autoplay
+      aria-label="Mr.A animated mascot"
+    />
   </button>;
 };
