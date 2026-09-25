@@ -48,17 +48,8 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   const latest3D = data3D?.data?.[0];
   const quick = ['ဒီနေ့ 2D Live ရလဒ်ပြပါ', '3D နောက်ဆုံးရလဒ်ပြပါ', '2D/3D မှတ်တမ်းဇယားပြပါ', 'SET တွက်နည်းရှင်းပြပါ'];
   return <div className="chat-home-shell">
-    <header className="chat-topbar">
-      <div className="chat-brand" title="Mr.A 2D3D Live ပင်မစာမျက်နှာ"><span className="chat-brand-mark">A</span><div><strong>Mr.A</strong><span>2D3D Brain</span></div></div>
-      <div className="chat-live-strip" aria-label="Live 2D 3D summary">
-        <span className="chat-live-state"><i /> LIVE</span><span className="chat-live-item"><b>2D</b>{loading2D ? '···' : formatNumeral(live?.twod || '--', numeralMode)}</span><span className="chat-live-divider" /><span className="chat-live-item chat-live-3d"><b>3D</b>{loading3D ? '···' : formatNumeral(latest3D?.result || '--', numeralMode)}</span>
-      </div>
-      <div className="chat-top-actions"><button onClick={onToggleNumeral} title="ဂဏန်းပုံစံပြောင်း">{numeralMode === 'myanmar' ? '၁၂၃' : '123'}</button><button onClick={onRefresh} disabled={refreshing} title="Live data ပြန်ရယူရန်"><RefreshCw className={refreshing ? 'spin' : ''} /></button></div>
-    </header>
-    <main className="chat-main">
-      <section className="chat-hero"><div className="chat-hero-kicker"><span><Wifi /> secure live stream</span><span>မေးလို့ရ · ကြည့်လို့ရ · သိလို့ရ</span></div><h1>2D / 3D Live<br /><em>ရလဒ်များ</em> တစ်နေရာတည်း</h1><p>Mr.A Brain က Live data၊ result table နဲ့ မှတ်တမ်းတွေကို ရှင်းလင်းစွာ စုစည်းပြပေးမယ်။</p></section>
       <section className="chat-surface" aria-label="Mr.A AI chat">
-        <div className="chat-surface-head"><div className="chat-agent"><span className="chat-agent-icon"><Bot /></span><div><strong>Mr.A Brain</strong><span><i /> Live data ကို နားထောင်နေတယ်</span></div></div><span className="chat-mode"><Sparkles /> context cards</span></div>
+        <div className="chat-surface-head"><div className="chat-agent"><span className="chat-agent-icon"><Bot /></span><div><strong>Mr.A Brain</strong><span><i /> Live data ကို နားထောင်နေတယ်</span></div></div><div className="chat-surface-tools"><span className="chat-live-strip" aria-label="Live 2D 3D summary"><span className="chat-live-state"><i /> LIVE</span><span className="chat-live-item"><b>2D</b>{loading2D ? '···' : formatNumeral(live?.twod || '--', numeralMode)}</span><span className="chat-live-divider" /><span className="chat-live-item chat-live-3d"><b>3D</b>{loading3D ? '···' : formatNumeral(latest3D?.result || '--', numeralMode)}</span></span><button className="chat-mini-action" onClick={onToggleNumeral} title="ဂဏန်းပုံစံပြောင်း">{numeralMode === 'myanmar' ? '၁၂၃' : '123'}</button><button className="chat-mini-action" onClick={onRefresh} disabled={refreshing} title="Live data ပြန်ရယူရန်"><RefreshCw className={refreshing ? 'spin' : ''} /></button></div></div>
         <div className="chat-feed" ref={feedRef}>
           {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A Brain'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}</div></article>)}
           {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A Brain စဉ်းစားနေတယ်...</div></div>}
@@ -68,7 +59,6 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
         </div>
         <div className="chat-composer-wrap"><div className="chat-quick-row">{quick.map((item) => <button key={item} onClick={() => send(item)} disabled={thinking}>{item}<ChevronRight /></button>)}</div><form className="chat-composer" onSubmit={(event) => { event.preventDefault(); send(); }}><input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Mr.A ကို မေးပါ… ဥပမာ ‘ဒီနေ့ 2D ရလဒ်ပြပါ’" /><button disabled={!input.trim() || thinking} aria-label="မေးခွန်းပို့ရန်"><Send /></button></form><p className="chat-disclaimer"><Activity /> API live data · AI answers may be approximate</p></div>
       </section>
-    </main>
   </div>;
 };
 
