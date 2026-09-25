@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm install --no-package-lock --no-audit --no-fund
 
+      - name: Restore Vite source entry
+        run: cp index.source.html index.html
+
       - name: Build Vite app
         run: npm run build
         env:
