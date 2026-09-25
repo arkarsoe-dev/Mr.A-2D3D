@@ -159,47 +159,6 @@ export const ThreeDSection: React.FC<ThreeDSectionProps> = ({
         </div>
       )}
 
-      {/* Screen Sub-Switcher: Arkar Soe Pro Table vs Monthly Calendar vs Historical List */}
-      <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 no-scrollbar">
-        <div className="flex items-center gap-1.5 p-1 bg-slate-900/90 rounded-2xl border border-slate-800 w-full sm:w-auto">
-          <button
-            onClick={() => handleSelectMode('arkarsoe')}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
-              activeMainMode === 'arkarsoe'
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>အာကာစိုး ဇယား (Arkar Soe)</span>
-          </button>
-
-          <button
-            onClick={() => handleSelectMode('monthlyCalendar')}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
-              activeMainMode === 'monthlyCalendar'
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>ပြက္ခဒိန် ဇယား (Calendar)</span>
-          </button>
-
-          <button
-            onClick={() => handleSelectMode('list')}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
-              activeMainMode === 'list'
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <ListFilter className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>ပေါက်စဉ် စာရင်း (Draws)</span>
-          </button>
-        </div>
-      </div>
-
       {/* Screen 1: Arkar Soe Pro Interactive Table */}
       {activeMainMode === 'arkarsoe' && (
         <ArkarSoeCalendarTable items={items} numeralMode={numeralMode} />

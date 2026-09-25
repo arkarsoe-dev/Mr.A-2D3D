@@ -123,14 +123,14 @@ export const Live2DCard: React.FC<Live2DCardProps> = ({
           </div>
 
           {/* SET & VALUE Metrics */}
-          <div className="md:col-span-6 space-y-3">
-            <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 shadow-md hover:border-amber-500/40 transition">
+          <div className="md:col-span-6 grid grid-cols-2 gap-2 sm:gap-3 items-stretch">
+            <div className="p-2.5 sm:p-4 rounded-xl bg-slate-950/70 border border-slate-800 shadow-md hover:border-amber-500/40 transition">
               <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span className="flex items-center gap-1 font-medium">
-                  <TrendingUp className="w-4 h-4 text-emerald-400" />
-                  Thai Stock SET Index
-                </span>
-                <span className="text-[10px] text-amber-400/80">ထိုင်းစတော့အညွှန်းကိန်း</span>
+                  <span className="flex items-center gap-1 font-medium min-w-0">
+                    <TrendingUp className="w-4 h-4 text-emerald-400" />
+                  <span className="truncate">Thai Stock SET Index</span>
+                  </span>
+                  <span className="hidden sm:inline text-[10px] text-amber-400/80">ထိုင်းစတော့အညွှန်းကိန်း</span>
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="font-num text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">
@@ -142,13 +142,13 @@ export const Live2DCard: React.FC<Live2DCardProps> = ({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 shadow-md hover:border-amber-500/40 transition">
+            <div className="p-2.5 sm:p-4 rounded-xl bg-slate-950/70 border border-slate-800 shadow-md hover:border-amber-500/40 transition">
               <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span className="flex items-center gap-1 font-medium">
-                  <Layers className="w-4 h-4 text-amber-400" />
-                  Total Value (M.Baht)
-                </span>
-                <span className="text-[10px] text-amber-400/80">ကုန်သွယ်မှုပမာဏ</span>
+                  <span className="flex items-center gap-1 font-medium min-w-0">
+                    <Layers className="w-4 h-4 text-amber-400" />
+                  <span className="truncate">Total Value (M.Baht)</span>
+                  </span>
+                  <span className="hidden sm:inline text-[10px] text-amber-400/80">ကုန်သွယ်မှုပမာဏ</span>
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="font-num text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">
@@ -161,7 +161,7 @@ export const Live2DCard: React.FC<Live2DCardProps> = ({
             </div>
 
             {/* Micro Formula Tip */}
-            <div className="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
+            <div className="col-span-2 p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
               <Info className="w-4 h-4 text-amber-400 flex-shrink-0" />
               <span>
                 တွက်ချက်နည်း: <strong className="text-slate-200">SET</strong> ၏ နောက်ဆုံးဂဏန်း +{' '}
