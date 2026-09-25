@@ -6,7 +6,6 @@ import { CommunityChat } from './components/CommunityChat';
 import { AiChat } from './components/AiChat';
 import { TwoDHistory } from './components/TwoDHistory';
 import { DreamCalculator } from './components/DreamCalculator';
-import { DeploymentModal } from './components/DeploymentModal';
 import { MenuDrawer } from './components/MenuDrawer';
 import { MrACharacter } from './components/MrACharacter';
 import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
@@ -45,7 +44,6 @@ export default function App() {
   const [error3D, setError3D] = useState(false);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const prevTwodRef = useRef<string>('');
@@ -268,12 +266,6 @@ export default function App() {
         </footer>
       </main>
 
-      {/* Deployment & GitHub Modal */}
-      <DeploymentModal
-        isOpen={isDeployModalOpen}
-        onClose={() => setIsDeployModalOpen(false)}
-      />
-
       {/* Slide-out Menu Drawer */}
       <MenuDrawer
         isOpen={isDrawerOpen}
@@ -286,9 +278,7 @@ export default function App() {
         onToggleSound={handleToggleSound}
         onRefresh={handleManualRefresh}
         isRefreshing={isRefreshing}
-        onOpenDeployModal={() => setIsDeployModalOpen(true)}
         serverTime={data2D?.server_time}
-        data2D={data2D}
       />
 
     </div>
