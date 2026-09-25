@@ -5,7 +5,7 @@ type Props = { activeTab: TabType; data: Live2DData | null; data3D: ThreeDRespon
 type BotAction = 'idle' | 'walking' | 'resting' | 'peeking' | 'dancing' | 'thinking' | 'waving' | 'pointing' | 'confused' | 'fallen';
 type BrainEvent = 'focus' | 'loading' | 'result2d' | 'result3d' | 'error' | 'tab' | 'click';
 
-const defaultPosition = { x: 42, y: 8 };
+const defaultPosition = { x: 48, y: 34 };
 
 export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading2D, loading3D, error2D, error3D }) => {
   const value2D = data?.live?.twod && data.live.twod !== '--' ? data.live.twod : '';
@@ -45,7 +45,7 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
     if (event === 'loading') { moveTo({ x: Math.max(42, window.innerWidth * .32), y: 92 }, 'thinking', text || 'ဒေတာကို စစ်ဆေးနေတယ်...', 2800); return; }
     if (event === 'result2d' || event === 'result3d') { moveTo({ x: Math.max(42, window.innerWidth * .42), y: 112 }, 'dancing', text || 'ရလဒ်အသစ် ထွက်လာပြီ!', 4200); return; }
     if (event === 'error') { moveTo({ x: 44, y: 70 }, 'confused', text || 'ခဏလေးနော်၊ ဒေတာ ပြန်ရှာနေတယ်', 3600); return; }
-    if (event === 'tab') { moveTo({ x: 52, y: 78 }, 'waving', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
+    if (event === 'tab') { moveTo({ x: 48, y: 34 }, 'waving', text || 'ဒီ screen ကို အတူကြည့်မယ်', 2600); return; }
     moveTo(position, 'dancing', text || 'ကံကောင်းပါစေ!', 2600);
   }, [moveTo, position]);
 
@@ -62,7 +62,11 @@ export const MrACharacter: React.FC<Props> = ({ activeTab, data, data3D, loading
   }, [activeTab, brain]);
 
   useEffect(() => {
-    if ((loading2D && activeTab === '2d_live') || (loading3D && activeTab.startsWith('3d_'))) brain('loading', activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...');
+    const initialLoad = !last2D.current && !last3D.current;
+    if ((loading2D && activeTab === '2d_live') || (loading3D && activeTab.startsWith('3d_'))) {
+      if (initialLoad) { setAction('thinking'); speak(activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...', 2800); }
+      else brain('loading', activeTab.startsWith('3d_') ? '၃လုံးရလဒ် ရှာနေတယ်...' : 'Live 2D ဒေတာ ရယူနေတယ်...');
+    }
     else if ((error2D && activeTab === '2d_live') || (error3D && activeTab.startsWith('3d_'))) brain('error');
   }, [activeTab, loading2D, loading3D, error2D, error3D, brain]);
 
