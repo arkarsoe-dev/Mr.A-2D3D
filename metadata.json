@@ -1,0 +1,6 @@
+{
+  "name": "Mr.A 2D3D Live",
+  "description": "Mr.A 2D3D မြန်မာ ၂လုံးထီ ၃လုံးထီ တိုက်ရိုက်ထုတ်လွှင့်မှုနှင့် ထီပေါက်ရလဒ်များ၊ တိုက်ရိုက်ကြည့်ရှု့ခြင်း၊ 3D ရလဒ်နှင့် အဖွဲ့လိုက်စကားပြောစနစ်",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
