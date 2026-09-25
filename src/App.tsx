@@ -71,7 +71,9 @@ export default function App() {
   const fetch2DLive = useCallback(async (isManual = false) => {
     try {
       if (isManual) setIsRefreshing(true);
-      const res = await fetch(TWO_D_API_URL);
+      const res = await fetch(`${TWO_D_API_URL}?_=${Date.now()}`, {
+        cache: 'no-store',
+      });
       if (res.ok) {
         const json: Live2DData = await res.json();
         setData2D(json);
@@ -100,7 +102,9 @@ export default function App() {
   const fetch3DResults = useCallback(async () => {
     try {
       setLoading3D(true);
-      const res = await fetch(THREE_D_API_URL);
+      const res = await fetch(`${THREE_D_API_URL}?_=${Date.now()}`, {
+        cache: 'no-store',
+      });
       if (res.ok) {
         const json: ThreeDResponse = await res.json();
         setData3D(json);
@@ -122,19 +126,28 @@ export default function App() {
     fetch2DLive();
     fetch3DResults();
 
-    // 2D Live polling every 3 seconds for dynamic market updates
+    // Keep the live screen fresh without wasting device resources in hidden tabs.
     const interval2D = setInterval(() => {
-      fetch2DLive();
-    }, 3000);
+      if (document.visibilityState === 'visible') fetch2DLive();
+    }, 5000);
 
     // 3D polling every 45 seconds
     const interval3D = setInterval(() => {
-      fetch3DResults();
-    }, 45000);
+      if (document.visibilityState === 'visible') fetch3DResults();
+    }, 180000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetch2DLive();
+        fetch3DResults();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       clearInterval(interval2D);
       clearInterval(interval3D);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [fetch2DLive, fetch3DResults]);
 
