@@ -56,7 +56,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
       <div className="chat-top-actions"><button onClick={onToggleNumeral} title="ဂဏန်းပုံစံပြောင်း">{numeralMode === 'myanmar' ? '၁၂၃' : '123'}</button><button onClick={onRefresh} disabled={refreshing} title="Live data ပြန်ရယူရန်"><RefreshCw className={refreshing ? 'spin' : ''} /></button></div>
     </header>
     <main className="chat-main">
-      <section className="chat-hero"><div className="chat-hero-kicker"><span><Wifi /> secure live stream</span><span>မေးလို့ရ · ကြည့်လို့ရ · သိလို့ရ</span></div><h1>ရလဒ်တွေကို<br /><em>စကားပြောပြီး</em> ကြည့်မယ်</h1><p>Mr.A ကို မေးလိုက်ပါ။ သက်ဆိုင်ရာ Live table နဲ့ result card ကို chat ထဲမှာ အလိုအလျောက် ထုတ်ပြပေးမယ်။</p></section>
+      <section className="chat-hero"><div className="chat-hero-kicker"><span><Wifi /> secure live stream</span><span>မေးလို့ရ · ကြည့်လို့ရ · သိလို့ရ</span></div><h1>2D / 3D Live<br /><em>ရလဒ်များ</em> တစ်နေရာတည်း</h1><p>Mr.A Brain က Live data၊ result table နဲ့ မှတ်တမ်းတွေကို ရှင်းလင်းစွာ စုစည်းပြပေးမယ်။</p></section>
       <section className="chat-surface" aria-label="Mr.A AI chat">
         <div className="chat-surface-head"><div className="chat-agent"><span className="chat-agent-icon"><Bot /></span><div><strong>Mr.A Brain</strong><span><i /> Live data ကို နားထောင်နေတယ်</span></div></div><span className="chat-mode"><Sparkles /> context cards</span></div>
         <div className="chat-feed" ref={feedRef}>
