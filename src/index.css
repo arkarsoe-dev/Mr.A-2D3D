@@ -493,3 +493,57 @@ main { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   .mra-character-float, .mra-character-eye, .mra-character-mouth, .mra-character-signal, .mra-companion .mra-character { animation: none; }
 }
+
+
+/* Interactive Mr.A roaming layer */
+.mra-companion.zone-a { left: 1rem; top: 19%; right: auto; bottom: auto; }
+.mra-companion.zone-b { right: 1rem; top: 31%; bottom: auto; }
+.mra-companion.zone-c { left: 1rem; bottom: 17%; right: auto; }
+.mra-companion.zone-d { right: 1rem; bottom: 13%; }
+.mra-companion.zone-e { left: 50%; top: 13%; right: auto; bottom: auto; transform: translateX(-50%); }
+.mra-companion .mra-character { transform-origin: 46px 104px; transition: transform .45s cubic-bezier(.23,1,.32,1); }
+.mra-camera-close .mra-character { transform: scale(1.28); }
+.mra-camera-profile .mra-character { transform: scale(1.06) rotate(-12deg); }
+.mra-camera-jump .mra-character { transform: scale(1.1); }
+.mra-action-celebrate .mra-character { animation: action-celebrate 1.1s ease-in-out infinite; }
+.mra-action-dance .mra-character { animation: action-dance .9s ease-in-out infinite; }
+.mra-action-laugh .mra-character { animation: action-laugh .65s ease-in-out infinite; }
+.mra-action-sad .mra-character { animation: action-sad 2s ease-in-out infinite; }
+.mra-action-sleep .mra-character { animation: action-sleep 3.4s ease-in-out infinite; }
+.mra-action-wave .mra-character { animation: action-wave 1.2s ease-in-out infinite; }
+.mra-action-think .mra-character { animation: action-think 2.5s ease-in-out infinite; }
+.mra-action-search .mra-character { animation: action-search 1.8s ease-in-out infinite; }
+.mra-action-work .mra-character { animation: action-work 1.3s ease-in-out infinite; }
+.mra-action-talk .mra-character { animation: action-talk 1.1s ease-in-out infinite; }
+.mra-action-watch .mra-character { animation: action-watch 2s ease-in-out infinite; }
+.mra-action-celebrate .mra-companion-bubble, .mra-action-dance .mra-companion-bubble { border-color: rgba(251,191,36,.8); color: #fde68a; }
+.mra-action-sad .mra-companion-bubble { border-color: rgba(148,163,184,.7); color: #cbd5e1; }
+.mra-character-tears, .mra-character-z, .mra-confetti { display: none; }
+.mra-action-sad .mra-character-tears { display: block; fill: none; stroke: #67e8f9; stroke-width: 2; stroke-linecap: round; animation: tears-drop 1.4s ease-in infinite; }
+.mra-action-sleep .mra-character-z { display: block; fill: #67e8f9; font-size: 12px; font-weight: 900; animation: sleep-z 1.8s ease-in-out infinite; }
+.mra-action-celebrate .mra-confetti, .mra-action-dance .mra-confetti { display: block; position: absolute; top: -.8rem; right: .1rem; color: #fbbf24; font-size: 1.2rem; animation: confetti-pop .8s ease-in-out infinite; }
+@keyframes action-celebrate { 0%,100% { transform: translateY(0) rotate(-5deg) scale(1); } 50% { transform: translateY(-15px) rotate(7deg) scale(1.1); } }
+@keyframes action-dance { 0%,100% { transform: rotate(-12deg) translateY(0); } 50% { transform: rotate(12deg) translateY(-8px); } }
+@keyframes action-laugh { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-5px) rotate(3deg) scale(1.04); } }
+@keyframes action-sad { 0%,100% { transform: translateY(0) rotate(4deg); } 50% { transform: translateY(4px) rotate(-5deg); } }
+@keyframes action-sleep { 0%,100% { transform: translateY(0) rotate(7deg); } 50% { transform: translateY(3px) rotate(12deg); } }
+@keyframes action-wave { 0%,100% { transform: rotate(-4deg); } 35% { transform: rotate(8deg) translateY(-5px); } 70% { transform: rotate(-8deg); } }
+@keyframes action-think { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-9deg) translateY(-4px); } }
+@keyframes action-search { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg) translateY(-3px); } }
+@keyframes action-work { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px) rotate(4deg); } }
+@keyframes action-talk { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px) scale(1.03); } }
+@keyframes action-watch { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-8px) rotate(-4deg); } }
+@keyframes tears-drop { 0% { opacity: 0; transform: translateY(-2px); } 45% { opacity: 1; } 100% { opacity: 0; transform: translateY(6px); } }
+@keyframes sleep-z { 0%,100% { opacity: .3; transform: translate(0,0); } 50% { opacity: 1; transform: translate(4px,-5px); } }
+@keyframes confetti-pop { 0%,100% { transform: rotate(-12deg) scale(.7); opacity: .45; } 50% { transform: rotate(18deg) scale(1.2); opacity: 1; } }
+@media (max-width: 640px) {
+  .mra-companion { transform: scale(.72); transform-origin: bottom right; }
+  .mra-companion.zone-a { left: -.35rem; }
+  .mra-companion.zone-b, .mra-companion.zone-d { right: -.35rem; }
+  .mra-companion.zone-c { left: -.35rem; bottom: 12%; }
+  .mra-companion.zone-e { top: 11%; }
+  .mra-companion-bubble { max-width: 8rem; font-size: .56rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mra-companion .mra-character, .mra-confetti, .mra-character-tears, .mra-character-z { animation: none; }
+}
