@@ -207,3 +207,63 @@ main { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+
+/* Animated Mr.A robot brand */
+.mra-robot-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, .38));
+  animation: mra-robot-float 2.8s ease-in-out infinite;
+}
+.mra-robot-icon {
+  width: 1.85rem;
+  height: 1.85rem;
+  stroke-width: 1.8;
+}
+.mra-robot-mark::before {
+  content: '';
+  position: absolute;
+  top: -0.1rem;
+  width: .42rem;
+  height: .42rem;
+  border-radius: 999px;
+  background: #34d399;
+  box-shadow: 0 0 9px rgba(52, 211, 153, .9);
+  animation: mra-robot-signal 1.8s ease-in-out infinite;
+}
+.mra-robot-eye {
+  position: absolute;
+  top: .86rem;
+  width: .2rem;
+  height: .2rem;
+  border-radius: 999px;
+  background: #34d399;
+  box-shadow: 0 0 5px rgba(52, 211, 153, .9);
+  animation: mra-robot-blink 4s ease-in-out infinite;
+}
+.mra-robot-eye-left { left: .78rem; }
+.mra-robot-eye-right { right: .78rem; }
+.group:hover .mra-robot-mark {
+  color: #fde68a;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, .7));
+}
+@keyframes mra-robot-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+@keyframes mra-robot-signal {
+  0%, 100% { opacity: .45; transform: scale(.75); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes mra-robot-blink {
+  0%, 45%, 50%, 100% { transform: scaleY(1); opacity: 1; }
+  47%, 49% { transform: scaleY(.15); opacity: .6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mra-robot-mark, .mra-robot-mark::before, .mra-robot-eye { animation: none; }
+}

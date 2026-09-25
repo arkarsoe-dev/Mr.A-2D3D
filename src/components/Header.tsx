@@ -68,8 +68,10 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-1.5 flex-shrink-0 cursor-pointer select-none group"
             title="Mr.A 2D3D Live ပင်မစာမျက်နှာ"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-700 flex items-center justify-center font-black text-slate-950 text-base border border-amber-300/40 shadow-sm group-hover:scale-105 transition">
-              A
+            <div className="mra-robot-mark" aria-hidden="true">
+              <Bot className="mra-robot-icon" />
+              <span className="mra-robot-eye mra-robot-eye-left" />
+              <span className="mra-robot-eye mra-robot-eye-right" />
             </div>
             <span className="hidden xs:inline sm:inline text-sm sm:text-base font-black bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent tracking-tight whitespace-nowrap">
               Mr.A
