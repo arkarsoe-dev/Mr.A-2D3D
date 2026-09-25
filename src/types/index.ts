@@ -54,6 +54,7 @@ export type ThreeDSubMode = 'arkarsoe' | 'monthlyCalendar' | 'list';
 
 export type TabType =
   | '2d_live'
+  | '2d_history'
   | '3d_result'
   | '3d_arkarsoe'
   | '3d_calendar'

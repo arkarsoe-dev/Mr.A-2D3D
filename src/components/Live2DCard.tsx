@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { Live2DData, NumeralMode } from '../types';
 import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter';
-import { TwoDHistory } from './TwoDHistory';
 
 interface Live2DCardProps {
   data: Live2DData | null;
@@ -256,8 +255,6 @@ export const Live2DCard: React.FC<Live2DCardProps> = ({
         </div>
       </div>
 
-      {/* 2D History Table Component */}
-      <TwoDHistory numeralMode={numeralMode} />
     </div>
   );
 };

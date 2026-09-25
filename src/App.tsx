@@ -4,6 +4,7 @@ import { Live2DCard } from './components/Live2DCard';
 import { ThreeDSection } from './components/ThreeDSection';
 import { CommunityChat } from './components/CommunityChat';
 import { AiChat } from './components/AiChat';
+import { TwoDHistory } from './components/TwoDHistory';
 import { DreamCalculator } from './components/DreamCalculator';
 import { DeploymentModal } from './components/DeploymentModal';
 import { MenuDrawer } from './components/MenuDrawer';
@@ -149,6 +150,10 @@ export default function App() {
             numeralMode={numeralMode}
             loading={loading2D}
           />
+        )}
+
+        {activeTab === '2d_history' && (
+          <TwoDHistory numeralMode={numeralMode} />
         )}
 
         {/* 3D Result Screens (Splitted into specialized cleaner views) */}

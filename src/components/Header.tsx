@@ -10,6 +10,7 @@ import {
   Grid,
   CalendarDays,
   ListFilter,
+  History,
 } from 'lucide-react';
 import { TabType } from '../types';
 
@@ -27,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenDrawer,
 }) => {
   const [is3DDropdownOpen, setIs3DDropdownOpen] = useState(false);
+  const [is2DDropdownOpen, setIs2DDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close 3D dropdown when clicking outside
@@ -46,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
     activeTab === '3d_calendar' ||
     activeTab === '3d_history';
 
-  const is2DActive = activeTab === '2d_live';
+  const is2DActive = activeTab === '2d_live' || activeTab === '2d_history';
   const isGroupChatActive = activeTab === 'group_chat';
   const isAiChatActive = activeTab === 'ai_chat';
   const isToolsActive = activeTab === 'tools';
@@ -77,19 +79,45 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Clean Icon-Only Navigation Bar (Fit perfectly on all mobile screens without horizontal scroll) */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             <nav className="flex items-center gap-1 sm:gap-1.5">
-              {/* 1. 2D Live Icon Button */}
-              <button
-                onClick={() => onChangeTab('2d_live')}
-                className={`relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
-                  is2DActive
-                    ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
-                    : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-900 border border-slate-800/80'
-                }`}
-                title="၂လုံး တိုက်ရိုက်ထုတ်လွှင့်မှု (2D Live)"
-                aria-label="2D Live"
-              >
-                <Radio className={`w-4 h-4 sm:w-4.5 sm:h-4.5 ${is2DActive ? 'text-slate-950 animate-pulse' : 'text-emerald-400'}`} />
-              </button>
+              {/* 1. 2D Icon Button with Live / History dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setIs2DDropdownOpen((open) => !open)}
+                  className={`relative flex items-center gap-0.5 p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
+                    is2DActive
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
+                      : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-900 border border-slate-800/80'
+                  }`}
+                  title="၂လုံးထီ Live နှင့် History Records"
+                  aria-label="2D Live and History Records"
+                  aria-expanded={is2DDropdownOpen}
+                >
+                  <Radio className={`w-4 h-4 sm:w-4.5 sm:h-4.5 ${is2DActive ? 'text-slate-950 animate-pulse' : 'text-emerald-400'}`} />
+                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${is2DDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {is2DDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-slate-900/95 border-2 border-emerald-500/30 shadow-2xl p-2 z-50 animate-fadeIn backdrop-blur-md">
+                    <div className="px-2 py-1 mb-1 border-b border-slate-800 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                      ၂လုံးထီ သီးခြား စခရင်များ
+                    </div>
+                    <button
+                      onClick={() => { onChangeTab('2d_live'); setIs2DDropdownOpen(false); }}
+                      className={`w-full flex items-center gap-2 p-2 rounded-xl text-left transition ${activeTab === '2d_live' ? 'bg-emerald-500/15 border border-emerald-500/40' : 'hover:bg-slate-800'}`}
+                    >
+                      <Radio className="w-4 h-4 text-emerald-400" />
+                      <span className="text-xs font-bold text-slate-100">2D Live</span>
+                    </button>
+                    <button
+                      onClick={() => { onChangeTab('2d_history'); setIs2DDropdownOpen(false); }}
+                      className={`w-full flex items-center gap-2 p-2 rounded-xl text-left transition ${activeTab === '2d_history' ? 'bg-amber-500/15 border border-amber-500/40' : 'hover:bg-slate-800'}`}
+                    >
+                      <History className="w-4 h-4 text-amber-400" />
+                      <span className="text-xs font-bold text-slate-100">History Records</span>
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* 2. 3D Result Icon Button with Popup Dropdown */}
               <div className="relative" ref={dropdownRef}>
