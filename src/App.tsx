@@ -8,7 +8,7 @@ import { TwoDHistory } from './components/TwoDHistory';
 import { DreamCalculator } from './components/DreamCalculator';
 import { DeploymentModal } from './components/DeploymentModal';
 import { MenuDrawer } from './components/MenuDrawer';
-import { MascotCompanion } from './components/MascotCompanion';
+import { MrACharacter } from './components/MrACharacter';
 import { Live2DData, ThreeDResponse, NumeralMode, TabType } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 
@@ -152,7 +152,7 @@ export default function App() {
         onOpenDrawer={() => setIsDrawerOpen(true)}
       />
 
-      <MascotCompanion
+      <MrACharacter
         activeTab={activeTab}
         data={data2D}
         data3D={data3D}

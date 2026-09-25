@@ -208,363 +208,93 @@ main { min-width: 0; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
-
-/* Animated Mr.A robot brand */
-.mra-robot-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  color: #fbbf24;
-  filter: drop-shadow(0 0 8px rgba(251, 191, 36, .38));
-  animation: mra-robot-float 2.8s ease-in-out infinite;
-}
-.mra-robot-icon {
-  width: 1.85rem;
-  height: 1.85rem;
-  stroke-width: 1.8;
-}
-.mra-robot-mark::before {
-  content: '';
-  position: absolute;
-  top: -0.1rem;
-  width: .42rem;
-  height: .42rem;
-  border-radius: 999px;
-  background: #34d399;
-  box-shadow: 0 0 9px rgba(52, 211, 153, .9);
-  animation: mra-robot-signal 1.8s ease-in-out infinite;
-}
-.mra-robot-eye {
-  position: absolute;
-  top: .86rem;
-  width: .2rem;
-  height: .2rem;
-  border-radius: 999px;
-  background: #34d399;
-  box-shadow: 0 0 5px rgba(52, 211, 153, .9);
-  animation: mra-robot-blink 4s ease-in-out infinite;
-}
-.mra-robot-eye-left { left: .78rem; }
-.mra-robot-eye-right { right: .78rem; }
-.group:hover .mra-robot-mark {
-  color: #fde68a;
-  filter: drop-shadow(0 0 12px rgba(251, 191, 36, .7));
-}
-@keyframes mra-robot-float {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50% { transform: translateY(-3px) rotate(1deg); }
-}
-@keyframes mra-robot-signal {
-  0%, 100% { opacity: .45; transform: scale(.75); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-@keyframes mra-robot-blink {
-  0%, 45%, 50%, 100% { transform: scaleY(1); opacity: 1; }
-  47%, 49% { transform: scaleY(.15); opacity: .6; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mra-robot-mark, .mra-robot-mark::before, .mra-robot-eye { animation: none; }
-}
-
-
-/* Mr.A mascot character: a visible animated robot companion */
-.mra-mascot {
-  position: relative;
-  width: 2.75rem;
-  height: 2.65rem;
-  flex: 0 0 auto;
-  animation: mascot-float 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 9px rgba(52, 211, 153, .35));
-}
-.mra-mascot-head {
-  position: absolute;
-  left: .38rem;
-  top: .42rem;
-  width: 2rem;
-  height: 1.35rem;
-  border: 2px solid #fbbf24;
-  border-radius: .62rem .62rem .72rem .72rem;
-  background: linear-gradient(145deg, #20334b, #07111f 72%);
-  box-shadow: inset 0 0 0 2px rgba(52, 211, 153, .12), 0 0 8px rgba(251, 191, 36, .25);
-  z-index: 2;
-}
-.mra-mascot-antenna {
-  position: absolute;
-  left: 1.32rem;
-  top: .06rem;
-  width: .12rem;
-  height: .45rem;
-  border-radius: 99px;
-  background: #fbbf24;
-  transform-origin: bottom;
-  animation: mascot-antenna 1.7s ease-in-out infinite;
-}
-.mra-mascot-antenna::after {
-  content: '';
-  position: absolute;
-  left: -.14rem;
-  top: -.17rem;
-  width: .4rem;
-  height: .4rem;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 9px #34d399;
-}
-.mra-mascot-eye {
-  position: absolute;
-  top: .43rem;
-  width: .27rem;
-  height: .27rem;
-  border-radius: 50%;
-  background: #67e8f9;
-  box-shadow: 0 0 6px #22d3ee;
-  animation: mascot-blink 4.5s ease-in-out infinite;
-}
-.mra-mascot-eye-left { left: .48rem; }
-.mra-mascot-eye-right { right: .48rem; }
-.mra-mascot-smile {
-  position: absolute;
-  left: .76rem;
-  bottom: .2rem;
-  width: .5rem;
-  height: .18rem;
-  border-bottom: 2px solid #34d399;
-  border-radius: 0 0 99px 99px;
-  animation: mascot-smile 2.4s ease-in-out infinite;
-}
-.mra-mascot-body {
-  position: absolute;
-  left: .72rem;
-  top: 1.68rem;
-  width: 1.34rem;
-  height: .82rem;
-  border: 2px solid #fbbf24;
-  border-radius: .45rem .45rem .6rem .6rem;
-  background: linear-gradient(145deg, #172d47, #07111f);
-  box-shadow: inset 0 0 0 2px rgba(52, 211, 153, .13);
-}
-.mra-mascot-body::after {
-  content: 'A';
-  position: absolute;
-  inset: .12rem;
-  display: grid;
-  place-items: center;
-  color: #34d399;
-  font-size: .58rem;
-  font-weight: 900;
-  text-shadow: 0 0 6px rgba(52, 211, 153, .8);
-}
-.mra-mascot-arm {
-  position: absolute;
-  top: 1.75rem;
-  width: .72rem;
-  height: .2rem;
-  border-radius: 99px;
-  background: #fbbf24;
-  transform-origin: 90% 50%;
-}
-.mra-mascot-arm-left { left: .18rem; transform: rotate(28deg); }
-.mra-mascot-arm-right { right: .12rem; transform: rotate(-28deg); animation: mascot-wave 1.8s ease-in-out infinite; }
-@keyframes mascot-float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
-@keyframes mascot-antenna { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(10deg); } }
-@keyframes mascot-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46%, 47% { transform: scaleY(.12); } }
-@keyframes mascot-smile { 0%, 100% { width: .42rem; } 50% { width: .62rem; } }
-@keyframes mascot-wave { 0%, 35%, 100% { transform: rotate(-28deg); } 18% { transform: rotate(-62deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .mra-mascot, .mra-mascot-antenna, .mra-mascot-eye, .mra-mascot-smile, .mra-mascot-arm-right { animation: none; }
-}
-
-
-/* Context-aware Mr.A companion: moves around the viewport with live mood */
+/* Mr.A organic digital creature */
 .mra-companion {
   position: fixed;
-  right: 1rem;
-  bottom: 1.25rem;
   z-index: 32;
   display: flex;
   align-items: flex-end;
-  gap: .35rem;
+  gap: .45rem;
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
-  transition: top 650ms cubic-bezier(.23,1,.32,1), right 650ms cubic-bezier(.23,1,.32,1), bottom 650ms cubic-bezier(.23,1,.32,1), left 650ms cubic-bezier(.23,1,.32,1);
+  pointer-events: auto;
+  transition: left 900ms cubic-bezier(.23,1,.32,1), right 900ms cubic-bezier(.23,1,.32,1), top 900ms cubic-bezier(.23,1,.32,1), bottom 900ms cubic-bezier(.23,1,.32,1), transform 500ms cubic-bezier(.23,1,.32,1);
 }
+.mra-companion.zone-a { left: 1rem; top: 19%; }
+.mra-companion.zone-b { right: 1rem; top: 31%; }
+.mra-companion.zone-c { left: 1rem; bottom: 17%; }
+.mra-companion.zone-d { right: 1rem; bottom: 13%; }
+.mra-companion.zone-e { left: 50%; top: 13%; transform: translateX(-50%); }
 .mra-companion-bubble {
-  max-width: 9rem;
-  padding: .35rem .55rem;
-  border: 1px solid rgba(52, 211, 153, .35);
-  border-radius: .75rem .75rem .2rem .75rem;
-  background: rgba(5, 15, 28, .92);
-  color: #d1fae5;
+  max-width: 10rem;
+  padding: .4rem .6rem;
+  border: 1px solid rgba(129, 140, 248, .45);
+  border-radius: .85rem .85rem .25rem .85rem;
+  background: rgba(5, 10, 24, .92);
+  color: #dbeafe;
   font-size: .62rem;
   font-weight: 800;
-  line-height: 1.35;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, .35), 0 0 12px rgba(52, 211, 153, .12);
+  line-height: 1.4;
+  box-shadow: 0 8px 25px rgba(0,0,0,.32), 0 0 16px rgba(99,102,241,.12);
   opacity: .92;
-  transform: translateY(-.45rem);
-  transition: transform .25s ease, opacity .25s ease, border-color .25s ease;
+  transform: translateY(-.5rem);
+  transition: opacity .25s ease, transform .25s ease;
 }
-.mra-companion:hover .mra-companion-bubble,
-.mra-companion.is-interacting .mra-companion-bubble { opacity: 1; transform: translateY(-.7rem) scale(1.04); }
-.mra-companion .mra-mascot { transform-origin: bottom center; }
-.mra-companion-excited { right: 1.1rem; bottom: 1.4rem; }
-.mra-companion-excited .mra-companion-bubble { border-color: rgba(251, 191, 36, .65); color: #fde68a; }
-.mra-companion-excited .mra-mascot { animation: mascot-celebrate 1.15s ease-in-out infinite; }
-.mra-companion-waiting { left: 1rem; top: 22%; right: auto; bottom: auto; }
-.mra-companion-waiting .mra-companion-bubble { border-color: rgba(148, 163, 184, .45); color: #cbd5e1; }
-.mra-companion-waiting .mra-mascot { animation: mascot-peek 3.2s ease-in-out infinite; }
-.mra-companion-searching { right: 1rem; top: 39%; bottom: auto; }
-.mra-companion-searching .mra-companion-bubble { border-color: rgba(251, 191, 36, .45); color: #fde68a; }
-.mra-companion-searching .mra-mascot { animation: mascot-search 2.1s ease-in-out infinite; }
-.mra-companion-social { left: 1rem; bottom: 18%; right: auto; }
-.mra-companion-social .mra-companion-bubble { border-color: rgba(96, 165, 250, .5); color: #bfdbfe; }
-.mra-companion-social .mra-mascot { animation: mascot-wave-big 1.5s ease-in-out infinite; }
-.mra-companion-thinking { right: 1rem; top: 44%; bottom: auto; }
-.mra-companion-thinking .mra-companion-bubble { border-color: rgba(129, 140, 248, .5); color: #c7d2fe; }
-.mra-companion-thinking .mra-mascot { animation: mascot-think 2.6s ease-in-out infinite; }
-.mra-companion-working { left: 1rem; top: 51%; right: auto; bottom: auto; }
-.mra-companion-working .mra-companion-bubble { border-color: rgba(192, 132, 252, .5); color: #e9d5ff; }
-.mra-companion-working .mra-mascot { animation: mascot-work 1.8s ease-in-out infinite; }
-.mra-companion-watching { right: 1rem; top: 27%; bottom: auto; }
-.mra-companion-watching .mra-companion-bubble { border-color: rgba(251, 191, 36, .5); color: #fde68a; }
-.mra-companion-watching .mra-mascot { animation: mascot-watch 2.4s ease-in-out infinite; }
-.mra-companion.is-interacting .mra-mascot { animation: mascot-jump .7s ease-out 1; }
-@keyframes mascot-celebrate { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-12px) rotate(5deg); } }
-@keyframes mascot-peek { 0%, 100% { transform: translateX(0) rotate(-2deg); } 50% { transform: translateX(7px) rotate(3deg); } }
-@keyframes mascot-search { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg) translateY(-3px); } }
-@keyframes mascot-wave-big { 0%, 100% { transform: rotate(-4deg); } 35% { transform: rotate(5deg) translateY(-4px); } 70% { transform: rotate(-2deg); } }
-@keyframes mascot-think { 0%, 100% { transform: rotate(2deg); } 50% { transform: rotate(-8deg) translateY(-3px); } }
-@keyframes mascot-work { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px) rotate(4deg); } }
-@keyframes mascot-watch { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-8px) rotate(-3deg); } }
-@keyframes mascot-jump { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(-15px) scale(1.08); } 100% { transform: translateY(0) scale(1); } }
+.mra-companion:hover .mra-companion-bubble, .mra-companion.is-interacting .mra-companion-bubble { opacity: 1; transform: translateY(-.75rem); }
+.mra-creature { width: 4.8rem; height: 5.7rem; overflow: visible; filter: drop-shadow(0 10px 15px rgba(0,0,0,.4)); transform-origin: 50% 100%; }
+.mra-creature-core { transform-origin: 50% 100%; animation: creature-breathe 4.8s ease-in-out infinite; }
+.mra-creature-body { fill: url(#mrACreatureBody); stroke: rgba(129,140,248,.75); stroke-width: 1.5; }
+.mra-creature-belly { fill: rgba(15,23,42,.68); stroke: rgba(96,165,250,.32); stroke-width: 1; }
+.mra-creature-eye { fill: #e0f2fe; stroke: #67e8f9; stroke-width: 1.2; filter: drop-shadow(0 0 4px rgba(34,211,238,.9)); transform-origin: center; animation: creature-blink 5.8s ease-in-out infinite; }
+.mra-creature-pupil { fill: #172554; transition: transform .6s cubic-bezier(.23,1,.32,1); }
+.mra-creature-mouth { fill: none; stroke: #c4b5fd; stroke-width: 1.7; stroke-linecap: round; transition: d .25s ease; }
+.mra-creature-ear { fill: #4f46e5; stroke: #a5b4fc; stroke-width: 1.2; }
+.mra-creature-limb { fill: none; stroke: #818cf8; stroke-width: 3.2; stroke-linecap: round; transform-origin: 50% 50%; }
+.mra-creature-foot { fill: #6366f1; stroke: #a5b4fc; stroke-width: 1; }
+.mra-creature-orb { fill: #67e8f9; filter: drop-shadow(0 0 7px #22d3ee); animation: creature-orb 2.4s ease-in-out infinite; }
+.mra-creature-spark { fill: #c4b5fd; opacity: 0; }
+.mra-action-idle .mra-creature { animation: creature-idle 7s ease-in-out infinite; }
+.mra-action-search .mra-creature, .mra-action-reading .mra-creature { animation: creature-observe 2.8s ease-in-out infinite; }
+.mra-action-celebrate .mra-creature, .mra-action-surprised .mra-creature { animation: creature-curious 1.2s ease-in-out infinite; }
+.mra-action-dance .mra-creature { animation: creature-dance 1.5s ease-in-out infinite; }
+.mra-action-sad .mra-creature { animation: creature-sad 3.4s ease-in-out infinite; }
+.mra-action-sleep .mra-creature { animation: creature-sleep 5s ease-in-out infinite; }
+.mra-action-wave .mra-creature, .mra-action-talk .mra-creature, .mra-action-speaking .mra-creature { animation: creature-social 1.7s ease-in-out infinite; }
+.mra-action-think .mra-creature, .mra-action-listening .mra-creature { animation: creature-think 3.2s ease-in-out infinite; }
+.mra-action-confused .mra-creature { animation: creature-confused 2.5s ease-in-out infinite; }
+.mra-action-working .mra-creature, .mra-action-work .mra-creature { animation: creature-work 2s ease-in-out infinite; }
+.mra-action-watch .mra-creature { animation: creature-watch 3s ease-in-out infinite; }
+.mra-action-celebrate .mra-creature-spark, .mra-action-dance .mra-creature-spark { opacity: 1; animation: creature-spark 1.2s ease-in-out infinite; }
+.mra-action-sad .mra-creature-eye { fill: #bfdbfe; }
+.mra-action-sad .mra-creature-mouth { transform: translateY(2px); }
+.mra-camera-close .mra-creature { transform: scale(1.16); }
+.mra-camera-profile .mra-creature { transform: rotate(-8deg) scale(1.04); }
+.mra-camera-jump .mra-creature { transform: scale(1.12); }
+@keyframes creature-breathe { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-1px) scaleY(1.018); } }
+@keyframes creature-idle { 0%,100% { transform: translateX(0) rotate(0); } 22% { transform: translateX(3px) rotate(2deg); } 30% { transform: translateX(3px) rotate(2deg); } 57% { transform: translateX(-3px) rotate(-2deg); } 64% { transform: translateX(-3px) rotate(-2deg); } }
+@keyframes creature-observe { 0%,100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(6deg) translateY(2px); } }
+@keyframes creature-curious { 0%,100% { transform: translateY(0) rotate(-5deg); } 45% { transform: translateY(-8px) rotate(5deg) scale(1.05); } }
+@keyframes creature-dance { 0%,100% { transform: rotate(-8deg) translateY(0); } 25% { transform: rotate(8deg) translateY(-4px); } 50% { transform: rotate(-6deg) translateY(-8px); } 75% { transform: rotate(7deg) translateY(-3px); } }
+@keyframes creature-sad { 0%,100% { transform: translateY(2px) rotate(5deg); } 50% { transform: translateY(4px) rotate(-3deg); } }
+@keyframes creature-sleep { 0%,100% { transform: translateY(2px) rotate(7deg); } 50% { transform: translateY(4px) rotate(12deg); } }
+@keyframes creature-social { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-4px) rotate(4deg); } }
+@keyframes creature-think { 0%,100% { transform: rotate(3deg); } 50% { transform: rotate(-7deg) translateY(-2px); } }
+@keyframes creature-confused { 0%,100% { transform: rotate(6deg); } 50% { transform: rotate(-7deg) translateY(2px); } }
+@keyframes creature-work { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px) rotate(3deg); } }
+@keyframes creature-watch { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-6px) rotate(-3deg); } }
+@keyframes creature-blink { 0%,44%,48%,100% { transform: scaleY(1); } 46%,47% { transform: scaleY(.08); } }
+@keyframes creature-orb { 0%,100% { opacity: .6; transform: scale(.86); } 50% { opacity: 1; transform: scale(1.12); } }
+@keyframes creature-spark { 0%,100% { transform: translate(0,0) scale(.6); opacity: .2; } 50% { transform: translate(8px,-8px) scale(1.2); opacity: 1; } }
 @media (max-width: 640px) {
-  .mra-companion { transform: scale(.82); transform-origin: bottom right; }
-  .mra-companion-waiting { left: -.15rem; }
-  .mra-companion-social, .mra-companion-working { left: -.15rem; }
-  .mra-companion-bubble { max-width: 7.5rem; font-size: .58rem; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mra-companion, .mra-companion .mra-mascot { transition: none; animation: none; }
-}
-
-
-/* SVG Mr.A notification character */
-.mra-character {
-  width: 4.6rem;
-  height: 5.4rem;
-  overflow: visible;
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .35));
-}
-.mra-character-float { transform-origin: 46px 104px; animation: character-idle 3s ease-in-out infinite; }
-.mra-character-head, .mra-character-body { stroke: #fbbf24; stroke-width: 2.2; }
-.mra-character-face { fill: #07111f; stroke: rgba(103, 232, 249, .55); stroke-width: 1.4; }
-.mra-character-eye { fill: #67e8f9; filter: drop-shadow(0 0 4px #22d3ee); animation: character-blink 4.8s ease-in-out infinite; }
-.mra-character-eye:nth-of-type(2) { animation-delay: .12s; }
-.mra-character-mouth { fill: none; stroke: #34d399; stroke-width: 2; stroke-linecap: round; animation: character-talk 2.2s ease-in-out infinite; }
-.mra-character-antenna, .mra-character-arm { fill: none; stroke: #fbbf24; stroke-width: 3; stroke-linecap: round; }
-.mra-character-signal { fill: #34d399; filter: drop-shadow(0 0 6px #34d399); animation: character-signal 1.4s ease-in-out infinite; }
-.mra-character-neck { fill: none; stroke: #34d399; stroke-width: 2.5; stroke-linecap: round; }
-.mra-character-badge { filter: drop-shadow(0 0 4px rgba(251,191,36,.8)); }
-.mra-character-hand { fill: #34d399; stroke: #fbbf24; stroke-width: 1.4; }
-.mra-character-excited .mra-character, .mra-companion-excited .mra-character { animation: character-celebrate 1.1s ease-in-out infinite; }
-.mra-companion-waiting .mra-character { animation: character-peek 3s ease-in-out infinite; }
-.mra-companion-searching .mra-character { animation: character-search 2s ease-in-out infinite; }
-.mra-companion-social .mra-character { animation: character-wave 1.3s ease-in-out infinite; }
-.mra-companion-thinking .mra-character { animation: character-think 2.4s ease-in-out infinite; }
-.mra-companion-working .mra-character { animation: character-work 1.6s ease-in-out infinite; }
-.mra-companion-watching .mra-character { animation: character-watch 2.2s ease-in-out infinite; }
-.mra-companion.is-interacting .mra-character { animation: character-jump .7s ease-out 1; }
-@keyframes character-idle { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-3px) rotate(1deg); } }
-@keyframes character-celebrate { 0%, 100% { transform: translateY(0) rotate(-5deg) scale(1); } 50% { transform: translateY(-10px) rotate(5deg) scale(1.04); } }
-@keyframes character-peek { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(7px) rotate(3deg); } }
-@keyframes character-search { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg) translateY(-3px); } }
-@keyframes character-wave { 0%, 100% { transform: rotate(-4deg); } 40% { transform: rotate(6deg) translateY(-4px); } 70% { transform: rotate(-2deg); } }
-@keyframes character-think { 0%, 100% { transform: rotate(3deg); } 50% { transform: rotate(-8deg) translateY(-3px); } }
-@keyframes character-work { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px) rotate(4deg); } }
-@keyframes character-watch { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-7px) rotate(-3deg); } }
-@keyframes character-jump { 0% { transform: translateY(0); } 45% { transform: translateY(-14px) scale(1.08); } 100% { transform: translateY(0); } }
-@keyframes character-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46%, 47% { transform: scaleY(.12); } }
-@keyframes character-talk { 0%, 100% { transform: scaleX(.8); } 50% { transform: scaleX(1.15); } }
-@keyframes character-signal { 0%, 100% { opacity: .5; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.18); } }
-@media (max-width: 640px) { .mra-character { width: 3.8rem; height: 4.5rem; } }
-@media (prefers-reduced-motion: reduce) {
-  .mra-character-float, .mra-character-eye, .mra-character-mouth, .mra-character-signal, .mra-companion .mra-character { animation: none; }
-}
-
-
-/* Interactive Mr.A roaming layer */
-.mra-companion.zone-a { left: 1rem; top: 19%; right: auto; bottom: auto; }
-.mra-companion.zone-b { right: 1rem; top: 31%; bottom: auto; }
-.mra-companion.zone-c { left: 1rem; bottom: 17%; right: auto; }
-.mra-companion.zone-d { right: 1rem; bottom: 13%; }
-.mra-companion.zone-e { left: 50%; top: 13%; right: auto; bottom: auto; transform: translateX(-50%); }
-.mra-companion .mra-character { transform-origin: 46px 104px; transition: transform .45s cubic-bezier(.23,1,.32,1); }
-.mra-camera-close .mra-character { transform: scale(1.28); }
-.mra-camera-profile .mra-character { transform: scale(1.06) rotate(-12deg); }
-.mra-camera-jump .mra-character { transform: scale(1.1); }
-.mra-action-celebrate .mra-character { animation: action-celebrate 1.1s ease-in-out infinite; }
-.mra-action-dance .mra-character { animation: action-dance .9s ease-in-out infinite; }
-.mra-action-laugh .mra-character { animation: action-laugh .65s ease-in-out infinite; }
-.mra-action-sad .mra-character { animation: action-sad 2s ease-in-out infinite; }
-.mra-action-sleep .mra-character { animation: action-sleep 3.4s ease-in-out infinite; }
-.mra-action-wave .mra-character { animation: action-wave 1.2s ease-in-out infinite; }
-.mra-action-think .mra-character { animation: action-think 2.5s ease-in-out infinite; }
-.mra-action-search .mra-character { animation: action-search 1.8s ease-in-out infinite; }
-.mra-action-work .mra-character { animation: action-work 1.3s ease-in-out infinite; }
-.mra-action-talk .mra-character { animation: action-talk 1.1s ease-in-out infinite; }
-.mra-action-watch .mra-character { animation: action-watch 2s ease-in-out infinite; }
-.mra-action-celebrate .mra-companion-bubble, .mra-action-dance .mra-companion-bubble { border-color: rgba(251,191,36,.8); color: #fde68a; }
-.mra-action-sad .mra-companion-bubble { border-color: rgba(148,163,184,.7); color: #cbd5e1; }
-.mra-character-tears, .mra-character-z, .mra-confetti { display: none; }
-.mra-action-sad .mra-character-tears { display: block; fill: none; stroke: #67e8f9; stroke-width: 2; stroke-linecap: round; animation: tears-drop 1.4s ease-in infinite; }
-.mra-action-sleep .mra-character-z { display: block; fill: #67e8f9; font-size: 12px; font-weight: 900; animation: sleep-z 1.8s ease-in-out infinite; }
-.mra-action-celebrate .mra-confetti, .mra-action-dance .mra-confetti { display: block; position: absolute; top: -.8rem; right: .1rem; color: #fbbf24; font-size: 1.2rem; animation: confetti-pop .8s ease-in-out infinite; }
-@keyframes action-celebrate { 0%,100% { transform: translateY(0) rotate(-5deg) scale(1); } 50% { transform: translateY(-15px) rotate(7deg) scale(1.1); } }
-@keyframes action-dance { 0%,100% { transform: rotate(-12deg) translateY(0); } 50% { transform: rotate(12deg) translateY(-8px); } }
-@keyframes action-laugh { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-5px) rotate(3deg) scale(1.04); } }
-@keyframes action-sad { 0%,100% { transform: translateY(0) rotate(4deg); } 50% { transform: translateY(4px) rotate(-5deg); } }
-@keyframes action-sleep { 0%,100% { transform: translateY(0) rotate(7deg); } 50% { transform: translateY(3px) rotate(12deg); } }
-@keyframes action-wave { 0%,100% { transform: rotate(-4deg); } 35% { transform: rotate(8deg) translateY(-5px); } 70% { transform: rotate(-8deg); } }
-@keyframes action-think { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-9deg) translateY(-4px); } }
-@keyframes action-search { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg) translateY(-3px); } }
-@keyframes action-work { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px) rotate(4deg); } }
-@keyframes action-talk { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px) scale(1.03); } }
-@keyframes action-watch { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-8px) rotate(-4deg); } }
-@keyframes tears-drop { 0% { opacity: 0; transform: translateY(-2px); } 45% { opacity: 1; } 100% { opacity: 0; transform: translateY(6px); } }
-@keyframes sleep-z { 0%,100% { opacity: .3; transform: translate(0,0); } 50% { opacity: 1; transform: translate(4px,-5px); } }
-@keyframes confetti-pop { 0%,100% { transform: rotate(-12deg) scale(.7); opacity: .45; } 50% { transform: rotate(18deg) scale(1.2); opacity: 1; } }
-@media (max-width: 640px) {
-  .mra-companion { transform: scale(.72); transform-origin: bottom right; }
-  .mra-companion.zone-a { left: -.35rem; }
-  .mra-companion.zone-b, .mra-companion.zone-d { right: -.35rem; }
-  .mra-companion.zone-c { left: -.35rem; bottom: 12%; }
-  .mra-companion.zone-e { top: 11%; }
+  .mra-companion { transform: scale(.7); transform-origin: bottom right; }
+  .mra-companion.zone-a { left: -.25rem; }
+  .mra-companion.zone-b, .mra-companion.zone-d { right: -.25rem; }
+  .mra-companion.zone-c { left: -.25rem; bottom: 12%; }
+  .mra-companion.zone-e { top: 10%; }
   .mra-companion-bubble { max-width: 8rem; font-size: .56rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mra-companion .mra-character, .mra-confetti, .mra-character-tears, .mra-character-z { animation: none; }
+  .mra-companion, .mra-creature-core, .mra-creature, .mra-creature-eye, .mra-creature-orb, .mra-creature-spark { animation: none !important; transition-duration: .01ms !important; }
 }
-
-
-/* Specification states: notice, reading, listening, speaking, surprise and error */
-.mra-action-reading .mra-character { animation: action-reading 1.8s ease-in-out infinite; }
-.mra-action-surprised .mra-character { animation: action-surprised .9s ease-in-out infinite; }
-.mra-action-confused .mra-character { animation: action-confused 2.2s ease-in-out infinite; }
-.mra-action-listening .mra-character { animation: action-listening 1.6s ease-in-out infinite; }
-.mra-action-speaking .mra-character { animation: action-speaking 1s ease-in-out infinite; }
-.mra-action-reading .mra-character-face, .mra-action-search .mra-character-face { stroke: #a78bfa; }
-.mra-action-reading .mra-character-eye, .mra-action-search .mra-character-eye { transform: translateY(4px); }
-.mra-action-surprised .mra-character-eye { transform: scale(1.35); }
-.mra-action-confused .mra-character-mouth { transform: translateY(2px) rotate(7deg); }
-.mra-action-speaking .mra-character-mouth { animation: character-talk-fast .35s ease-in-out infinite alternate; }
-.mra-action-listening .mra-character-signal { fill: #67e8f9; }
-.mra-action-confused .mra-companion-bubble { border-color: rgba(251, 191, 36, .65); color: #fde68a; }
-@keyframes action-reading { 0%,100% { transform: translateY(0) rotate(5deg); } 50% { transform: translateY(3px) rotate(-5deg); } }
-@keyframes action-surprised { 0%,100% { transform: translateY(0) scale(1); } 45% { transform: translateY(-6px) scale(1.08); } }
-@keyframes action-confused { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-8deg) translateY(2px); } }
-@keyframes action-listening { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-5deg) translateX(-4px); } }
-@keyframes action-speaking { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px) scale(1.02); } }
-@keyframes character-talk-fast { from { transform: scaleX(.72); } to { transform: scaleX(1.18); } }
