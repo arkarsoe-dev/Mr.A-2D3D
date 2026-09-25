@@ -38,9 +38,11 @@ export default function App() {
 
   const [data2D, setData2D] = useState<Live2DData | null>(null);
   const [loading2D, setLoading2D] = useState(true);
+  const [error2D, setError2D] = useState(false);
 
   const [data3D, setData3D] = useState<ThreeDResponse | null>(null);
   const [loading3D, setLoading3D] = useState(true);
+  const [error3D, setError3D] = useState(false);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
@@ -73,6 +75,7 @@ export default function App() {
       if (res.ok) {
         const json: Live2DData = await res.json();
         setData2D(json);
+        setError2D(false);
 
         // Check if 2D number updated and play sound
         if (json.live?.twod && json.live.twod !== '--') {
@@ -81,9 +84,12 @@ export default function App() {
           }
           prevTwodRef.current = json.live.twod;
         }
+      } else {
+        setError2D(true);
       }
     } catch (e) {
       console.warn('Failed to fetch 2D live data:', e);
+      setError2D(true);
     } finally {
       setLoading2D(false);
       if (isManual) setIsRefreshing(false);
@@ -98,9 +104,13 @@ export default function App() {
       if (res.ok) {
         const json: ThreeDResponse = await res.json();
         setData3D(json);
+        setError3D(false);
+      } else {
+        setError3D(true);
       }
     } catch (e) {
       console.warn('Failed to fetch 3D data:', e);
+      setError3D(true);
       setData3D(THREE_D_FALLBACK);
     } finally {
       setLoading3D(false);
@@ -142,7 +152,15 @@ export default function App() {
         onOpenDrawer={() => setIsDrawerOpen(true)}
       />
 
-      <MascotCompanion activeTab={activeTab} data={data2D} />
+      <MascotCompanion
+        activeTab={activeTab}
+        data={data2D}
+        data3D={data3D}
+        loading2D={loading2D}
+        loading3D={loading3D}
+        error2D={error2D}
+        error3D={error3D}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-5">

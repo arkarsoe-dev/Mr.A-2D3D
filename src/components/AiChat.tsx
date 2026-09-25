@@ -74,6 +74,7 @@ export const AiChat: React.FC<AiChatProps> = () => {
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setLoading(true);
+    window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'think', text: 'မေးခွန်းကို စဉ်းစားနေတယ်' } }));
 
     try {
       // Build history for API
@@ -104,11 +105,13 @@ export const AiChat: React.FC<AiChatProps> = () => {
           }),
         };
         setMessages((prev) => [...prev, aiMsg]);
+        window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'speaking', text: 'အဖြေပြောနေတယ်' } }));
       } else {
         throw new Error('API failed');
       }
     } catch (e) {
       console.error('AI chat failed:', e);
+      window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'confused', text: 'အဖြေရှာရာမှာ ခဏအခက်အခဲရှိတယ်' } }));
       setMessages((prev) => [
         ...prev,
         {
@@ -258,7 +261,10 @@ export const AiChat: React.FC<AiChatProps> = () => {
           <input
             type="text"
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => {
+              setInputText(e.target.value);
+              window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'listening', text: 'နားထောင်နေတယ်' } }));
+            }}
             placeholder="Mr.A AI အား အထွေထွေ မေးမြန်းရန် ရိုက်ထည့်ပါ..."
             disabled={loading}
             className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"

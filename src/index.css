@@ -547,3 +547,24 @@ main { min-width: 0; }
 @media (prefers-reduced-motion: reduce) {
   .mra-companion .mra-character, .mra-confetti, .mra-character-tears, .mra-character-z { animation: none; }
 }
+
+
+/* Specification states: notice, reading, listening, speaking, surprise and error */
+.mra-action-reading .mra-character { animation: action-reading 1.8s ease-in-out infinite; }
+.mra-action-surprised .mra-character { animation: action-surprised .9s ease-in-out infinite; }
+.mra-action-confused .mra-character { animation: action-confused 2.2s ease-in-out infinite; }
+.mra-action-listening .mra-character { animation: action-listening 1.6s ease-in-out infinite; }
+.mra-action-speaking .mra-character { animation: action-speaking 1s ease-in-out infinite; }
+.mra-action-reading .mra-character-face, .mra-action-search .mra-character-face { stroke: #a78bfa; }
+.mra-action-reading .mra-character-eye, .mra-action-search .mra-character-eye { transform: translateY(4px); }
+.mra-action-surprised .mra-character-eye { transform: scale(1.35); }
+.mra-action-confused .mra-character-mouth { transform: translateY(2px) rotate(7deg); }
+.mra-action-speaking .mra-character-mouth { animation: character-talk-fast .35s ease-in-out infinite alternate; }
+.mra-action-listening .mra-character-signal { fill: #67e8f9; }
+.mra-action-confused .mra-companion-bubble { border-color: rgba(251, 191, 36, .65); color: #fde68a; }
+@keyframes action-reading { 0%,100% { transform: translateY(0) rotate(5deg); } 50% { transform: translateY(3px) rotate(-5deg); } }
+@keyframes action-surprised { 0%,100% { transform: translateY(0) scale(1); } 45% { transform: translateY(-6px) scale(1.08); } }
+@keyframes action-confused { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-8deg) translateY(2px); } }
+@keyframes action-listening { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-5deg) translateX(-4px); } }
+@keyframes action-speaking { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px) scale(1.02); } }
+@keyframes character-talk-fast { from { transform: scaleX(.72); } to { transform: scaleX(1.18); } }

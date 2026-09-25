@@ -74,6 +74,7 @@ export const CommunityChat: React.FC<CommunityChatProps> = ({ numeralMode }) => 
       if (res.ok) {
         setInputText('');
         setPredictionTag('');
+        window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'speaking', text: 'အဖွဲ့ထဲမှာ စကားပြောနေတယ်' } }));
         await fetchChatMessages();
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }
@@ -195,7 +196,10 @@ export const CommunityChat: React.FC<CommunityChatProps> = ({ numeralMode }) => 
             <input
               type="text"
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => {
+                setInputText(e.target.value);
+                window.dispatchEvent(new CustomEvent('mra:character', { detail: { action: 'listening', text: 'စကားကို နားထောင်နေတယ်' } }));
+              }}
               placeholder="သဘောထား/ဂဏန်းအမြင် ရေးသားပါ..."
               maxLength={250}
               className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-3 pr-9 py-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-amber-500"

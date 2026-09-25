@@ -1,17 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Live2DData, TabType } from '../types';
+import { Live2DData, TabType, ThreeDResponse } from '../types';
 
-type CharacterAction = 'idle' | 'celebrate' | 'dance' | 'laugh' | 'sad' | 'sleep' | 'wave' | 'think' | 'search' | 'work' | 'talk' | 'watch';
+type CharacterAction = 'idle' | 'celebrate' | 'dance' | 'laugh' | 'sad' | 'sleep' | 'wave' | 'think' | 'search' | 'work' | 'talk' | 'watch' | 'reading' | 'surprised' | 'confused' | 'listening' | 'speaking';
 type CameraMode = 'wide' | 'close' | 'profile' | 'jump';
 
-type Props = { activeTab: TabType; data: Live2DData | null };
+type Props = { activeTab: TabType; data: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean };
 
 const actionText: Record<CharacterAction, string> = {
   idle: 'Mr.A ဒီမှာရှိတယ်', celebrate: 'အသစ်ထွက်ပြီ!', dance: 'ပျော်လို့ ကနေတယ်!', laugh: 'ဟားဟား!', sad: 'နည်းနည်းဝမ်းနည်းနေတယ်',
-  sleep: 'စောင့်ရင်း အိပ်ချင်လာပြီ', wave: 'မင်္ဂလာပါ!', think: 'စဉ်းစားနေတယ်', search: 'မှတ်တမ်းရှာနေတယ်', work: 'တွက်ပေးနေတယ်', talk: 'စကားပြောကြမယ်', watch: 'ရလဒ်ကြည့်နေတယ်',
+  sleep: 'စောင့်ရင်း အိပ်ချင်လာပြီ', wave: 'မင်္ဂလာပါ!', think: 'စဉ်းစားနေတယ်', search: 'မှတ်တမ်းရှာနေတယ်', work: 'တွက်ပေးနေတယ်', talk: 'စကားပြောကြမယ်', watch: 'ရလဒ်ကြည့်နေတယ်', reading: 'အချက်အလက်ဖတ်နေတယ်', surprised: 'အံ့ဩသွားတယ်', confused: 'အချက်အလက်မရှင်းသေးဘူး', listening: 'နားထောင်နေတယ်', speaking: 'ပြောနေတယ်',
 };
 
-function screenAction(activeTab: TabType, hasLive: boolean): CharacterAction {
+function screenAction(activeTab: TabType, hasLive: boolean, loading2D: boolean, loading3D: boolean, error2D: boolean, error3D: boolean): CharacterAction {
+  if (activeTab.startsWith('3d_') && loading3D) return 'search';
+  if (activeTab.startsWith('3d_') && error3D) return 'confused';
+  if (activeTab === '2d_live' && loading2D) return 'search';
+  if (activeTab === '2d_live' && error2D) return 'confused';
   if (activeTab === 'group_chat') return 'talk';
   if (activeTab === 'ai_chat') return 'think';
   if (activeTab === 'tools') return 'work';
@@ -38,15 +42,16 @@ function playTone(kind: 'celebrate' | 'click' | 'sad') {
   } catch { /* Audio is optional and may be blocked until interaction. */ }
 }
 
-export const MascotCompanion: React.FC<Props> = ({ activeTab, data }) => {
+export const MascotCompanion: React.FC<Props> = ({ activeTab, data, data3D, loading2D, loading3D, error2D, error3D }) => {
   const twod = data?.live?.twod && data.live.twod !== '--' ? data.live.twod : '';
-  const baseAction = screenAction(activeTab, Boolean(twod));
+  const baseAction = screenAction(activeTab, Boolean(twod), loading2D, loading3D, error2D, error3D);
   const [action, setAction] = useState<CharacterAction>(baseAction);
   const [camera, setCamera] = useState<CameraMode>('wide');
   const [zone, setZone] = useState(0);
   const [speech, setSpeech] = useState(actionText[baseAction]);
   const [isInteracting, setIsInteracting] = useState(false);
   const lastTwod = useRef('');
+  const last3D = useRef('');
   const transientTimer = useRef<number | null>(null);
   const roamZones = useMemo(() => ['zone-a', 'zone-b', 'zone-c', 'zone-d', 'zone-e'], []);
 
@@ -56,8 +61,9 @@ export const MascotCompanion: React.FC<Props> = ({ activeTab, data }) => {
     setCamera(nextCamera);
     if (transientTimer.current) window.clearTimeout(transientTimer.current);
     transientTimer.current = window.setTimeout(() => {
-      setAction(screenAction(activeTab, Boolean(twod)));
-      setSpeech(actionText[screenAction(activeTab, Boolean(twod))]);
+      const nextAction = screenAction(activeTab, Boolean(twod), loading2D, loading3D, error2D, error3D);
+      setAction(nextAction);
+      setSpeech(actionText[nextAction]);
       setCamera('wide');
     }, 5200);
   };
@@ -77,9 +83,27 @@ export const MascotCompanion: React.FC<Props> = ({ activeTab, data }) => {
   }, [twod]);
 
   useEffect(() => {
+    const result3D = data3D?.data?.[0]?.result || '';
+    if (!result3D || last3D.current === result3D) return;
+    const isNew = Boolean(last3D.current);
+    last3D.current = result3D;
+    if (isNew && activeTab.startsWith('3d_')) perform('surprised', `3D ရလဒ် ${result3D} ကိုတွေ့ပြီ`, 'close');
+  }, [data3D, activeTab]);
+
+  useEffect(() => {
     const timer = window.setInterval(() => setZone((value) => (value + 1) % roamZones.length), 7000);
     return () => window.clearInterval(timer);
   }, [roamZones.length]);
+
+  useEffect(() => {
+    const handleCharacterEvent = (event: Event) => {
+      const detail = (event as CustomEvent<{ action?: CharacterAction; text?: string }>).detail || {};
+      const nextAction = detail.action || 'listening';
+      perform(nextAction, detail.text || actionText[nextAction]);
+    };
+    window.addEventListener('mra:character', handleCharacterEvent);
+    return () => window.removeEventListener('mra:character', handleCharacterEvent);
+  }, [activeTab, twod, loading2D, loading3D, error2D, error3D]);
 
   useEffect(() => () => { if (transientTimer.current) window.clearTimeout(transientTimer.current); }, []);
 
