@@ -326,3 +326,24 @@ main { min-width: 0; }
 @keyframes firefly-watch { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
 @media (max-width: 640px) { .mra-firefly { right: .35rem; bottom: .8rem; transform: scale(.72); transform-origin: bottom right; } .mra-firefly .mra-companion-bubble { max-width: 8rem; font-size: .56rem; } }
 @media (prefers-reduced-motion: reduce) { .mra-firefly-art, .mra-firefly-core, .mra-firefly-wing, .mra-firefly-light, .mra-firefly-spark { animation: none !important; } }
+
+/* Mobile-first viewing pass: keep the primary 2D/3D controls visible and comfortable. */
+@media (max-width: 480px) {
+  header.sticky > div { padding-top: .5rem; padding-bottom: .5rem; }
+  header.sticky nav { gap: .22rem !important; }
+  header.sticky nav button, header.sticky > div > button { min-width: 2.65rem; min-height: 2.65rem; padding: .62rem !important; }
+  header.sticky .mobile-secondary-nav { display: none; }
+  header.sticky nav button svg { width: 1.15rem; height: 1.15rem; }
+  header.sticky nav button svg + svg { width: .7rem; height: .7rem; }
+  main { padding-left: .65rem; padding-right: .65rem; padding-top: .75rem; }
+  .mra-firefly { bottom: .45rem; right: -.1rem; opacity: .72; }
+  .mra-firefly .mra-companion-bubble { display: none; }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  header.sticky .mobile-secondary-nav { display: none; }
+}
+
+/* Prevent the 3D pattern surface from expanding the document viewport on phones. */
+.arkar-table-viewport { max-width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+input, select, button { touch-action: manipulation; }

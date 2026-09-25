@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* 3. Group Chat Icon Button (အသုံးပြုသူအချင်းချင်း စကားပြောရန်) */}
               <button
                 onClick={() => onChangeTab('group_chat')}
-                className={`relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
+                className={`mobile-secondary-nav relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
                   isGroupChatActive
                     ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
                     : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-900 border border-slate-800/80'
@@ -231,7 +231,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* 4. AI Chat Icon Button (AI နှင့် အထွေထွေ စကားပြောရန်) */}
               <button
                 onClick={() => onChangeTab('ai_chat')}
-                className={`relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
+                className={`mobile-secondary-nav relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
                   isAiChatActive
                     ? 'bg-indigo-500 text-white font-black shadow-md shadow-indigo-500/30'
                     : 'text-slate-400 hover:text-indigo-400 hover:bg-slate-900 border border-slate-800/80'
@@ -245,7 +245,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* 5. Dream / Calculator Tools Icon Button */}
               <button
                 onClick={() => onChangeTab('tools')}
-                className={`relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
+                className={`mobile-secondary-nav relative p-2 sm:px-2.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
                   isToolsActive
                     ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
                     : 'text-slate-400 hover:text-purple-400 hover:bg-slate-900 border border-slate-800/80'
