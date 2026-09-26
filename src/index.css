@@ -531,3 +531,23 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
 :root[data-theme="light"] { --ink:#f4f8f5; --ink-soft:#ffffff; --panel:#ffffff; --line:rgba(21,53,54,.16); --muted:#5e7175; --paper:#112225; --mint:#087f5b; --mint-dark:#087f5b; --orange:#bc681e; --violet:#6346b8; color-scheme:light; }.mra-chat-app:has(.settings-panel) .sound-toggle { z-index:85; }
 @media (prefers-color-scheme:light) { :root[data-theme="system"] { --ink:#f4f8f5; --ink-soft:#ffffff; --panel:#ffffff; --line:rgba(21,53,54,.16); --muted:#5e7175; --paper:#112225; --mint:#087f5b; --mint-dark:#087f5b; --orange:#bc681e; --violet:#6346b8; color-scheme:light; } }
 @media (max-width:700px) { .settings-backdrop { align-items:end; padding:.6rem; }.settings-panel { max-height:88vh; border-radius:1rem; }.settings-panel-body { padding:.95rem; }.settings-theme-grid button { font-size:.53rem; }.settings-panel h2 { font-size:1rem; } }
+
+/* Light theme surface overrides for the full-screen chat. */
+:root[data-theme="light"] .chat-surface { background:#f7fbf8; }
+:root[data-theme="light"] .chat-surface-head { background:rgba(255,255,255,.86); }
+:root[data-theme="light"] .chat-composer-wrap { background:rgba(255,255,255,.9); }
+:root[data-theme="light"] .chat-bubble-text { color:#193437; background:rgba(8,127,91,.07); border-color:rgba(8,127,91,.2); }
+:root[data-theme="light"] .chat-entry.is-user .chat-bubble-text { color:#5b351c; background:rgba(188,104,30,.1); }
+:root[data-theme="light"] .context-card { background:#ffffff; box-shadow:0 12px 30px rgba(21,53,54,.08); }
+:root[data-theme="light"] .live-card-grid div,:root[data-theme="light"] .session-mini-grid div { background:rgba(21,53,54,.04); border-color:rgba(21,53,54,.1); }
+:root[data-theme="light"] .chat-composer { background:rgba(8,127,91,.05); }
+:root[data-theme="light"] .chat-composer input::placeholder { color:#71878a; }
+:root[data-theme="light"] .sound-toggle { color:#557073; background:rgba(255,255,255,.8); }
+@media (prefers-color-scheme:light) {
+  :root[data-theme="system"] .chat-surface { background:#f7fbf8; }
+  :root[data-theme="system"] .chat-surface-head { background:rgba(255,255,255,.86); }
+  :root[data-theme="system"] .chat-composer-wrap { background:rgba(255,255,255,.9); }
+  :root[data-theme="system"] .chat-bubble-text { color:#193437; background:rgba(8,127,91,.07); border-color:rgba(8,127,91,.2); }
+  :root[data-theme="system"] .context-card { background:#ffffff; box-shadow:0 12px 30px rgba(21,53,54,.08); }
+  :root[data-theme="system"] .chat-composer { background:rgba(8,127,91,.05); }
+}
