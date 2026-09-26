@@ -3,14 +3,16 @@ import { Activity, Bot, CalendarDays, Clock3, Hash, Loader2, RefreshCw, Send, Se
 import { Live2DData, NumeralMode, ThreeDResponse } from '../types';
 import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter';
 import { MrAInlineCharacter } from './MrAInlineCharacter';
+import { SiteLanguage } from './SettingsPanel';
 
-type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean; numeralMode: NumeralMode; onToggleNumeral: () => void; onRefresh: () => void; refreshing: boolean };
+type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean; numeralMode: NumeralMode; onToggleNumeral: () => void; onRefresh: () => void; refreshing: boolean; language: SiteLanguage; onOpenSettings: () => void };
 type Entry = { id: string; role: 'assistant' | 'user'; text?: string; card?: '2d' | '3d' | 'sessions' | 'calendar'; data?: unknown; time: string };
 
 const timeLabel = () => new Date().toLocaleTimeString('my-MM', { hour: 'numeric', minute: '2-digit' });
 const starterText = 'မင်္ဂလာပါ။ ဒီနေရာမှာ မေးချင်တာကို လွတ်လပ်စွာ ရေးနိုင်ပါတယ်။';
 
-export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing }) => {
+export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing, language, onOpenSettings }) => {
+  const english = language === 'en';
   const [entries, setEntries] = useState<Entry[]>([{ id: 'welcome', role: 'assistant', text: starterText, time: timeLabel() }]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
@@ -25,6 +27,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   useEffect(() => { const next = data2D?.live?.twod || '--'; if (next !== '--') setLast2D(next); }, [data2D]);
   useEffect(() => { const result = data3D?.data?.[0]?.result; if (result) setLast3D(result); }, [data3D]);
   useEffect(() => { scrollDown(); }, [entries.length, thinking]);
+  useEffect(() => { setEntries((prev) => prev.map((entry) => entry.id === 'welcome' ? { ...entry, text: english ? 'Hello. You can write anything you would like to ask here.' : starterText } : entry)); }, [english]);
 
   const answerFor = (question: string): { text: string; card?: Entry['card']; data?: unknown } => {
     const q = question.toLowerCase();
@@ -38,11 +41,9 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
     const question = (preset || input).trim(); if (!question || thinking) return;
     addEntry({ role: 'user', text: question }); setInput(''); setThinking(true); scrollDown();
     const local = answerFor(question); addEntry({ role: 'assistant', text: local.text, card: local.card, data: local.data });
-    try {
-      const response = await fetch('/api/ai-chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: question, history: entries.filter((entry) => entry.text).slice(-8).map((entry) => ({ role: entry.role === 'user' ? 'user' : 'model', text: entry.text })) }) });
-      if (response.ok) { const json = await response.json(); if (json.reply) addEntry({ role: 'assistant', text: json.reply }); }
-    } catch { /* local card answer remains useful on free static hosting */ }
-    finally { setThinking(false); }
+    // Mr.A free mode is intentionally local-only for now. Cloud model adapters
+    // and user keys are saved in Settings but are not called until a future backend is connected.
+    setThinking(false);
   };
 
   const live = data2D?.live;
@@ -54,7 +55,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   };
   return <div className="chat-home-shell">
       <section className="chat-surface" aria-label="Mr.A AI chat">
-        <div className="chat-surface-head"><div className="chat-agent"><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /><div><strong>Mr.A</strong><span><i /> အဆင်သင့်ရှိနေပါတယ်</span></div></div><div className="chat-surface-tools"><button className="chat-icon-button" aria-label="User profile" title="User profile"><UserRound /></button><button className="chat-icon-button" aria-label="Website settings" title="Website settings"><Settings /></button></div></div>
+        <div className="chat-surface-head"><div className="chat-agent"><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /><div><strong>Mr.A</strong><span><i /> {english ? 'Ready to help' : 'အဆင်သင့်ရှိနေပါတယ်'}</span></div></div><div className="chat-surface-tools"><button className="chat-icon-button" aria-label={english ? 'User profile' : 'အသုံးပြုသူ profile'} title={english ? 'User profile' : 'အသုံးပြုသူ profile'}><UserRound /></button><button className="chat-icon-button" aria-label={english ? 'Website settings' : 'Website settings'} title={english ? 'Website settings' : 'Website settings'} onClick={onOpenSettings}><Settings /></button></div></div>
         <div className="chat-feed" ref={feedRef}>
           {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === 'calendar' && <CalendarCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}</div></article>)}
           {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A စဉ်းစားနေတယ်...</div></div>}
@@ -62,7 +63,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
           {error3D && <div className="chat-system-note">3D data server ကို ချိတ်ဆက်နေပါတယ်။ ရရှိထားတဲ့ နောက်ဆုံးမှတ်တမ်းကို ပြထားပါတယ်။</div>}
           <div ref={bottomRef} />
         </div>
-        <div className="chat-composer-wrap"><form className="chat-composer" onSubmit={(event) => { event.preventDefault(); send(); }}><input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Mr.A ကို မေးပါ…" /><button disabled={!input.trim() || thinking} aria-label="မေးခွန်းပို့ရန်"><Send /></button></form><p className="chat-disclaimer"><Activity /> API live data · AI answers may be approximate</p></div>
+        <div className="chat-composer-wrap"><form className="chat-composer" onSubmit={(event) => { event.preventDefault(); send(); }}><input value={input} onChange={(event) => setInput(event.target.value)} placeholder={english ? 'Ask Mr.A…' : 'Mr.A ကို မေးပါ…'} /><button disabled={!input.trim() || thinking} aria-label={english ? 'Send question' : 'မေးခွန်းပို့ရန်'}><Send /></button></form><p className="chat-disclaimer"><Activity /> API live data · AI answers may be approximate</p></div>
       </section>
   </div>;
 };

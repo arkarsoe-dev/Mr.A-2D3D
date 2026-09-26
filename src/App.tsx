@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatHome } from './components/ChatHome';
+import { CloudModel, SettingsPanel, SiteLanguage, SiteTheme } from './components/SettingsPanel';
 import { Live2DData, NumeralMode, ThreeDResponse } from './types';
 import { playNotificationSound } from './utils/numberConverter';
 
@@ -10,6 +11,11 @@ const THREE_D_FALLBACK: ThreeDResponse = { data: [{ result: '640', datetime: '20
 export default function App() {
   const [numeralMode, setNumeralMode] = useState<NumeralMode>(() => (localStorage.getItem('mra_numeral_mode') as NumeralMode) || 'myanmar');
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('mra_sound_enabled') === 'true');
+  const [language, setLanguage] = useState<SiteLanguage>(() => (localStorage.getItem('mra_language') as SiteLanguage) || 'my');
+  const [theme, setTheme] = useState<SiteTheme>(() => (localStorage.getItem('mra_theme') as SiteTheme) || 'system');
+  const [model, setModel] = useState<CloudModel>(() => (localStorage.getItem('mra_model') as CloudModel) || 'mra');
+  const [modelKeys, setModelKeys] = useState<Record<Exclude<CloudModel, 'mra'>, string>>(() => { try { return JSON.parse(localStorage.getItem('mra_model_keys') || '{}'); } catch { return {}; } });
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [data2D, setData2D] = useState<Live2DData | null>(null);
   const [data3D, setData3D] = useState<ThreeDResponse | null>(null);
   const [loading2D, setLoading2D] = useState(true);
@@ -55,6 +61,11 @@ export default function App() {
   const toggleNumeral = () => { const next: NumeralMode = numeralMode === 'myanmar' ? 'english' : 'myanmar'; setNumeralMode(next); localStorage.setItem('mra_numeral_mode', next); };
   const refresh = () => { fetch2D(true); fetch3D(); };
   const toggleSound = () => { const next = !soundEnabled; setSoundEnabled(next); localStorage.setItem('mra_sound_enabled', String(next)); if (next) playNotificationSound(); };
+  const changeLanguage = (value: SiteLanguage) => { setLanguage(value); localStorage.setItem('mra_language', value); };
+  const changeTheme = (value: SiteTheme) => { setTheme(value); localStorage.setItem('mra_theme', value); };
+  const changeModel = (value: CloudModel) => { setModel(value); localStorage.setItem('mra_model', value); };
+  const changeModelKey = (provider: Exclude<CloudModel, 'mra'>, value: string) => { const next = { ...modelKeys, [provider]: value }; setModelKeys(next); localStorage.setItem('mra_model_keys', JSON.stringify(next)); };
+  useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
 
-  return <div className="mra-chat-app"><ChatHome data2D={data2D} data3D={data3D} loading2D={loading2D} loading3D={loading3D} error2D={error2D} error3D={error3D} numeralMode={numeralMode} onToggleNumeral={toggleNumeral} onRefresh={refresh} refreshing={isRefreshing} /><button className="sound-toggle" onClick={toggleSound} aria-label="အသံပြောင်းရန်">{soundEnabled ? 'SOUND ON' : 'SOUND OFF'}</button></div>;
+  return <div className="mra-chat-app"><ChatHome data2D={data2D} data3D={data3D} loading2D={loading2D} loading3D={loading3D} error2D={error2D} error3D={error3D} numeralMode={numeralMode} onToggleNumeral={toggleNumeral} onRefresh={refresh} refreshing={isRefreshing} language={language} onOpenSettings={() => setSettingsOpen(true)} /><button className="sound-toggle" onClick={toggleSound} aria-label="အသံပြောင်းရန်">{soundEnabled ? 'SOUND ON' : 'SOUND OFF'}</button>{settingsOpen && <SettingsPanel language={language} theme={theme} model={model} keys={modelKeys} onLanguageChange={changeLanguage} onThemeChange={changeTheme} onModelChange={changeModel} onKeyChange={changeModelKey} onClose={() => setSettingsOpen(false)} />}</div>;
 }
