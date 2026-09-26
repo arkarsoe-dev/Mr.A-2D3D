@@ -472,3 +472,18 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
 .mra-inline-character.is-loading .mra-inline-speech { color:#cfc4ff; border-color:rgba(185,167,255,.42); }
 .mra-inline-character.is-loading .mra-inline-speech b { color:var(--violet); }
 @media (max-width:700px) { .mra-inline-character { flex-basis:2.15rem; width:2.15rem; height:2.35rem; transform:scale(.86); transform-origin:left center; margin-right:-.35rem; } .mra-inline-character .mra-bot-button { transform:scale(.34); } .mra-inline-speech { left:1.3rem; top:-.8rem; padding:.27rem .36rem; font-size:.4rem; }.mra-inline-speech b { font-size:.55rem; } .chat-agent { gap:.42rem; } }
+
+/* Character-only result navigation popup. */
+.mra-inline-character { z-index:10; }
+.mra-inline-speech { pointer-events:none; }
+.mra-inline-character.is-open .mra-inline-speech { pointer-events:auto; left:1.7rem; top:-1.35rem; padding:.45rem; border-color:rgba(141,242,194,.55); }
+.mra-character-menu { display:grid; grid-template-columns:repeat(3,max-content); align-items:center; gap:.32rem; }
+.mra-character-menu strong { grid-column:1/-1; color:#dffcf0; font-size:.5rem; font-weight:700; }
+.mra-character-menu button { border:1px solid rgba(141,242,194,.25); border-radius:.35rem; padding:.35rem .45rem; color:#bfead7; background:rgba(141,242,194,.08); font-family:Outfit,'Noto Sans Myanmar',sans-serif; font-size:.48rem; white-space:nowrap; cursor:pointer; }
+.mra-character-menu button:hover,.mra-character-menu button:focus-visible { color:#07131a; background:var(--mint); outline:none; }
+.context-card-calendar { border-color:rgba(185,167,255,.24); }
+.context-card-calendar .context-card-top span { color:var(--violet); }
+.calendar-mini-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.45rem; padding:.8rem; }
+.calendar-mini-grid div { display:grid; gap:.25rem; padding:.55rem; border-radius:.6rem; background:rgba(185,167,255,.06); }
+.calendar-mini-grid small { color:var(--muted); font-size:.52rem; }.calendar-mini-grid strong { color:#d9d1ff; font-family:Outfit,sans-serif; font-size:1.1rem; }
+@media (max-width:700px) { .mra-inline-character.is-open .mra-inline-speech { left:1.25rem; top:-1.3rem; }.mra-character-menu { grid-template-columns:repeat(3,max-content); gap:.25rem; }.mra-character-menu button { padding:.32rem .36rem; font-size:.39rem; }.mra-character-menu strong { font-size:.42rem; }.calendar-mini-grid { grid-template-columns:repeat(2,1fr); } }

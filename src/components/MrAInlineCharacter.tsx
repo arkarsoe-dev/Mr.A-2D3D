@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-type Props = { twod?: string; loading?: boolean };
+type Destination = '2d' | '3d' | 'calendar';
+type Props = { twod?: string; loading?: boolean; onNavigate?: (destination: Destination) => void };
 
-export const MrAInlineCharacter: React.FC<Props> = ({ twod = '--', loading = false }) => {
+export const MrAInlineCharacter: React.FC<Props> = ({ twod = '--', loading = false, onNavigate }) => {
+  const [open, setOpen] = useState(false);
   const display = loading ? '···' : twod || '--';
+  const navigate = (destination: Destination) => { onNavigate?.(destination); setOpen(false); };
+
   return (
-    <span className={`mra-inline-character ${loading ? 'is-loading' : ''}`} role="img" aria-label={`Mr.A character says live 2D ${display}`}>
-      <span className="mra-inline-speech">2D Live <b>{display}</b></span>
-      <span className="mra-bot-button" aria-hidden="true">
+    <span className={`mra-inline-character ${loading ? 'is-loading' : ''} ${open ? 'is-open' : ''}`} role="group" aria-label={`Mr.A character says live 2D ${display}`}>
+      <span className="mra-inline-speech" role="status">
+        {open ? <span className="mra-character-menu" role="menu" aria-label="Mr.A result pages">
+          <strong>ဘယ်ကို သွားမလဲ?</strong>
+          <button type="button" onClick={() => navigate('2d')} role="menuitem">2D Live</button>
+          <button type="button" onClick={() => navigate('3d')} role="menuitem">3D Result</button>
+          <button type="button" onClick={() => navigate('calendar')} role="menuitem">3D Calendar</button>
+        </span> : <><span>2D Live</span> <b>{display}</b></>}
+      </span>
+      <button type="button" className="mra-bot-button" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Mr.A menu ပိတ်ရန်' : 'Mr.A result pages menu ဖွင့်ရန်'} aria-expanded={open}>
         <span className="mra-bot-antenna" />
         <span className="mra-bot-head"><span className="mra-bot-visor"><i /><i /></span></span>
-        <span className="mra-bot-torso"><span className="mra-bot-arm mra-bot-arm-left" /><span className="mra-bot-chest"><b /><small>{display}</small></span><span className="mra-bot-arm mra-bot-arm-right" /></span>
+        <span className="mra-bot-torso"><span className="mra-bot-arm mra-bot-arm-left" /><span className="mra-bot-chest"><b /><small>2D</small></span><span className="mra-bot-arm mra-bot-arm-right" /></span>
         <span className="mra-bot-legs"><span className="mra-bot-leg mra-bot-leg-left"><em /></span><span className="mra-bot-leg mra-bot-leg-right"><em /></span></span>
-      </span>
+      </button>
     </span>
   );
 };
