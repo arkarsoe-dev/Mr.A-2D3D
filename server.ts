@@ -318,7 +318,7 @@ app.post('/api/chat', (req: Request, res: Response) => {
 
 // Route: AI Chat Assistant with Gemini 3.8 Flash
 app.post('/api/ai-chat', async (req: Request, res: Response) => {
-  const { message, history } = req.body;
+  const { message, history, liveContext } = req.body;
 
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Message is required' });
@@ -345,9 +345,13 @@ Your expertise covers:
       }
     }
 
+    const contextLine = liveContext && typeof liveContext === 'object'
+      ? `\n\nCurrent live context (may be delayed; never present it as a guaranteed prediction): 2D=${String(liveContext.twod || '--')}, SET=${String(liveContext.set || '--')}, VALUE=${String(liveContext.value || '--')}, latest 3D=${String(liveContext.latest3d || '--')} on ${String(liveContext.latest3dDate || '--')}.`
+      : '';
+
     contents.push({
       role: 'user',
-      parts: [{ text: message.trim() }],
+      parts: [{ text: `${message.trim()}${contextLine}` }],
     });
 
     const response = await ai.models.generateContent({
