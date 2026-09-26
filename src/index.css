@@ -458,3 +458,17 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
 .mra-inline-character .mra-bot-chest small { margin-top:0; color:#052e3b; font-family:Outfit,sans-serif; font-size:12px; font-weight:900; line-height:1; letter-spacing:-.04em; }
 .mra-inline-character.is-loading .mra-bot-chest small { color:#7c3aed; letter-spacing:.02em; }
 @media (max-width:700px) { .mra-inline-character { flex-basis:2.15rem; width:2.15rem; height:2.35rem; transform:scale(.86); transform-origin:left center; margin-right:-.35rem; } .mra-inline-character .mra-bot-button { transform:scale(.34); } .chat-agent { gap:.42rem; } }
+
+/* Compact Mr.A mascot beside the name; character speech carries the live 2D twod. */
+.mra-inline-character { position:relative; display:inline-flex; flex:0 0 2.5rem; align-self:center; width:2.5rem; height:2.75rem; overflow:visible; }
+.mra-inline-character .mra-bot-button { width:100px; height:116px; pointer-events:none; cursor:default; transform:scale(.39); transform-origin:top left; filter:drop-shadow(0 5px 8px rgba(0,0,0,.35)); }
+.mra-inline-character .mra-bot-antenna::before { animation:bot-pulse 1.4s ease-in-out infinite alternate; }
+.mra-inline-character .mra-bot-chest b { width:10px; height:10px; margin-bottom:1px; }
+.mra-inline-character .mra-bot-chest small { margin-top:0; color:#052e3b; font-family:Outfit,sans-serif; font-size:12px; font-weight:900; line-height:1; letter-spacing:-.04em; }
+.mra-inline-character.is-loading .mra-bot-chest small { color:#7c3aed; letter-spacing:.02em; }
+.mra-inline-speech { position:absolute; z-index:4; left:1.8rem; top:-1rem; display:inline-flex; align-items:center; gap:.22rem; min-width:max-content; padding:.3rem .45rem; border:1px solid rgba(141,242,194,.4); border-radius:.55rem .55rem .55rem .12rem; color:#dffcf0; background:#10262a; box-shadow:0 4px 12px rgba(0,0,0,.28); font-family:Outfit,'Noto Sans Myanmar',sans-serif; font-size:.46rem; line-height:1; white-space:nowrap; }
+.mra-inline-speech::before { content:''; position:absolute; left:-.28rem; bottom:.18rem; width:.42rem; height:.42rem; border-left:1px solid rgba(141,242,194,.4); border-bottom:1px solid rgba(141,242,194,.4); background:#10262a; transform:skewX(-25deg) rotate(35deg); }
+.mra-inline-speech b { color:var(--mint); font-size:.62rem; letter-spacing:-.03em; }
+.mra-inline-character.is-loading .mra-inline-speech { color:#cfc4ff; border-color:rgba(185,167,255,.42); }
+.mra-inline-character.is-loading .mra-inline-speech b { color:var(--violet); }
+@media (max-width:700px) { .mra-inline-character { flex-basis:2.15rem; width:2.15rem; height:2.35rem; transform:scale(.86); transform-origin:left center; margin-right:-.35rem; } .mra-inline-character .mra-bot-button { transform:scale(.34); } .mra-inline-speech { left:1.3rem; top:-.8rem; padding:.27rem .36rem; font-size:.4rem; }.mra-inline-speech b { font-size:.55rem; } .chat-agent { gap:.42rem; } }
