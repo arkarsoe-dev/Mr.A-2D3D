@@ -21,7 +21,7 @@ export const ThreeDCalendarPage: React.FC<Props> = ({ data3D, numeralMode, langu
 
   useEffect(() => {
     let active = true;
-    fetch(`/data.json?_=${Date.now()}`, { cache: 'no-store' })
+    fetch(`${import.meta.env.BASE_URL}data.json?_=${Date.now()}`, { cache: 'no-store' })
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('data.json unavailable')))
       .then((rows: SyncedRow[]) => { if (active) setSyncedRows(rows); })
       .catch(() => { if (active) setSyncedRows(THREE_D_HISTORICAL_DATA.map((item) => ({ date: item.datetime, number: item.result }))); })
