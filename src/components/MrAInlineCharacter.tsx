@@ -18,7 +18,7 @@ export const MrAInlineCharacter: React.FC<Props> = ({ twod = '--', loading = fal
           <button type="button" onClick={() => navigate('2d')} role="menuitem">2D Live</button>
           <button type="button" onClick={() => navigate('3d')} role="menuitem">3D Result</button>
           <button type="button" onClick={() => navigate('calendar')} role="menuitem">3D Calendar</button>
-        </span> : <><span>2D Live</span> <b>{display}</b></>}
+        </span> : <><span className="mra-live-label">2D LIVE</span> <b>{display}</b></>}
       </span>
       <button type="button" className="mra-bot-button" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Mr.A menu ပိတ်ရန်' : 'Mr.A result pages menu ဖွင့်ရန်'} aria-expanded={open}>
         <span className="mra-bot-antenna" />

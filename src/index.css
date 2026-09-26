@@ -551,3 +551,13 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
   :root[data-theme="system"] .context-card { background:#ffffff; box-shadow:0 12px 30px rgba(21,53,54,.08); }
   :root[data-theme="system"] .chat-composer { background:rgba(8,127,91,.05); }
 }
+
+/* Mr.A header re-balance: name stays left, character stays close on the right. */
+.chat-agent { gap:.42rem; }
+.mra-inline-speech { padding:.38rem .58rem; border-color:rgba(141,242,194,.68); background:linear-gradient(135deg,#17393a,#10262a); box-shadow:0 0 0 1px rgba(141,242,194,.08),0 5px 18px rgba(0,0,0,.34),0 0 14px rgba(141,242,194,.12); font-size:.55rem; font-weight:700; }
+.mra-inline-speech .mra-live-label { color:#f1fff8; font-family:Outfit,'Noto Sans Myanmar',sans-serif; font-size:.57rem; font-weight:900; letter-spacing:.055em; text-shadow:0 0 8px rgba(141,242,194,.5); }
+.mra-inline-speech b { color:#9fffd0; font-size:.78rem; font-weight:900; text-shadow:0 0 10px rgba(141,242,194,.42); }
+.mra-inline-character.mra-pose-walk { animation:mra-walk-return 2.1s cubic-bezier(.45,.05,.55,.95) infinite; }
+@keyframes mra-walk-return { 0%,12% { transform:translateX(0) translateY(0); } 28% { transform:translateX(-.3rem) translateY(-.04rem); } 48% { transform:translateX(-.8rem) translateY(0); } 63% { transform:translateX(-1.05rem) translateY(-.05rem); } 78% { transform:translateX(-.55rem) translateY(0); } 92%,100% { transform:translateX(0) translateY(0); } }
+@media (max-width:700px) { .mra-inline-speech { padding:.3rem .45rem; }.mra-inline-speech .mra-live-label { font-size:.48rem; }.mra-inline-speech b { font-size:.66rem; }.mra-inline-character.mra-pose-walk { animation:mra-walk-return-mobile 2.1s cubic-bezier(.45,.05,.55,.95) infinite; } }
+@keyframes mra-walk-return-mobile { 0%,12% { transform:scale(.86) translateX(0) translateY(0); } 28% { transform:scale(.86) translateX(-.18rem) translateY(-.03rem); } 48% { transform:scale(.86) translateX(-.5rem) translateY(0); } 63% { transform:scale(.86) translateX(-.68rem) translateY(-.04rem); } 78% { transform:scale(.86) translateX(-.35rem) translateY(0); } 92%,100% { transform:scale(.86) translateX(0) translateY(0); } }
