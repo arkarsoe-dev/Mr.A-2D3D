@@ -487,3 +487,25 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
 .calendar-mini-grid div { display:grid; gap:.25rem; padding:.55rem; border-radius:.6rem; background:rgba(185,167,255,.06); }
 .calendar-mini-grid small { color:var(--muted); font-size:.52rem; }.calendar-mini-grid strong { color:#d9d1ff; font-family:Outfit,sans-serif; font-size:1.1rem; }
 @media (max-width:700px) { .mra-inline-character.is-open .mra-inline-speech { left:1.25rem; top:-1.3rem; }.mra-character-menu { grid-template-columns:repeat(3,max-content); gap:.25rem; }.mra-character-menu button { padding:.32rem .36rem; font-size:.39rem; }.mra-character-menu strong { font-size:.42rem; }.calendar-mini-grid { grid-template-columns:repeat(2,1fr); } }
+
+/* Clean icon-only controls and expressive automatic Mr.A poses. */
+.chat-icon-button { display:grid; place-items:center; width:2.25rem; height:2.25rem; border:1px solid var(--line); border-radius:.7rem; color:var(--muted); background:rgba(255,255,255,.035); cursor:pointer; transition:color .18s ease,border-color .18s ease,transform .18s ease; }
+.chat-icon-button:hover,.chat-icon-button:focus-visible { color:var(--mint); border-color:rgba(141,242,194,.45); transform:translateY(-1px); outline:none; }
+.chat-icon-button svg { width:1rem; height:1rem; }
+.mra-inline-character .mra-bot-button { animation:inline-float 3.2s ease-in-out infinite; }
+.mra-pose-wave .mra-bot-arm-right { animation:bot-wave .42s infinite alternate ease-in-out; transform-origin:bottom center; }
+.mra-pose-wave .mra-bot-visor i { background:#34d399; box-shadow:0 0 10px #34d399; }
+.mra-pose-think .mra-bot-head { animation:inline-think 1.1s ease-in-out infinite alternate; }
+.mra-pose-think .mra-bot-arm-left { transform:rotate(42deg); transform-origin:bottom center; }
+.mra-pose-think .mra-bot-arm-right { transform:rotate(-42deg); transform-origin:bottom center; }
+.mra-pose-think .mra-bot-visor i { height:5px; margin-top:4px; background:#a78bfa; box-shadow:0 0 9px #a78bfa; }
+.mra-pose-dance .mra-bot-arm-left { animation:bot-dance-left .4s infinite alternate ease-in-out; }
+.mra-pose-dance .mra-bot-arm-right { animation:bot-dance-right .4s infinite alternate ease-in-out; }
+.mra-pose-dance .mra-bot-leg-left,.mra-pose-dance .mra-bot-leg-right { animation:bot-dance-leg .4s infinite alternate ease-in-out; }
+.mra-pose-dance .mra-bot-head { animation:bot-head-wiggle .4s infinite alternate ease-in-out; }
+.mra-pose-dance .mra-bot-visor i { background:#fbbf24; box-shadow:0 0 10px #fbbf24; }
+@keyframes inline-float { 0%,100% { transform:scale(.39) translateY(0); } 50% { transform:scale(.39) translateY(-3px); } }
+@keyframes inline-think { from { transform:rotate(-7deg) translateY(1px); } to { transform:rotate(7deg) translateY(2px); } }
+@media (max-width:700px) { .chat-icon-button { width:2rem; height:2rem; }.chat-icon-button svg { width:.88rem; height:.88rem; }.mra-inline-character .mra-bot-button { animation:inline-float-mobile 3.2s ease-in-out infinite; } }
+@keyframes inline-float-mobile { 0%,100% { transform:scale(.34) translateY(0); } 50% { transform:scale(.34) translateY(-3px); } }
+@media (prefers-reduced-motion:reduce) { .mra-inline-character .mra-bot-button,.mra-pose-wave .mra-bot-arm-right,.mra-pose-think .mra-bot-head,.mra-pose-dance .mra-bot-arm-left,.mra-pose-dance .mra-bot-arm-right,.mra-pose-dance .mra-bot-leg-left,.mra-pose-dance .mra-bot-leg-right,.mra-pose-dance .mra-bot-head { animation:none!important; } }

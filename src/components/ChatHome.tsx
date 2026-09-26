@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Activity, Bot, CalendarDays, ChevronRight, Clock3, Hash, Loader2, RefreshCw, Send, Sparkles, TrendingUp, Trophy, UserRound, Wifi } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Clock3, Hash, Loader2, RefreshCw, Send, Settings, Trophy, UserRound } from 'lucide-react';
 import { Live2DData, NumeralMode, ThreeDResponse } from '../types';
 import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter';
 import { MrAInlineCharacter } from './MrAInlineCharacter';
@@ -8,7 +8,7 @@ type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading
 type Entry = { id: string; role: 'assistant' | 'user'; text?: string; card?: '2d' | '3d' | 'sessions' | 'calendar'; data?: unknown; time: string };
 
 const timeLabel = () => new Date().toLocaleTimeString('my-MM', { hour: 'numeric', minute: '2-digit' });
-const starterText = 'မင်္ဂလာပါ။ Mr.A Brain က 2D/3D Live data၊ ထီမှတ်တမ်းနဲ့ တွက်နည်းတွေကို တစ်နေရာတည်းမှာ ရှင်းပြပေးမယ်။ ဘာကိုကြည့်ချင်လဲ မေးလိုက်ပါ။';
+const starterText = 'မင်္ဂလာပါ။ ဒီနေရာမှာ မေးချင်တာကို လွတ်လပ်စွာ ရေးနိုင်ပါတယ်။';
 
 export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing }) => {
   const [entries, setEntries] = useState<Entry[]>([{ id: 'welcome', role: 'assistant', text: starterText, time: timeLabel() }]);
@@ -46,7 +46,6 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   };
 
   const live = data2D?.live;
-  const latest3D = data3D?.data?.[0];
   const openDestination = (destination: '2d' | '3d' | 'calendar') => {
     if (destination === '2d') addEntry({ role: 'assistant', card: '2d', data: data2D, text: '2D Live page ကို ဖွင့်ပြထားပါတယ်။' });
     if (destination === '3d') addEntry({ role: 'assistant', card: '3d', data: data3D, text: '3D Result page ကို ဖွင့်ပြထားပါတယ်။' });
@@ -55,10 +54,10 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   };
   return <div className="chat-home-shell">
       <section className="chat-surface" aria-label="Mr.A AI chat">
-        <div className="chat-surface-head"><div className="chat-agent"><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /><div><strong>Mr.A Brain</strong><span><i /> Live 2D ကို စောင့်ကြည့်နေတယ်</span></div></div><div className="chat-surface-tools"><span className="chat-live-strip" aria-label="Live 2D 3D summary"><span className="chat-live-state"><i /> LIVE</span><span className="chat-live-item"><b>2D</b>{loading2D ? '···' : formatNumeral(live?.twod || '--', numeralMode)}</span><span className="chat-live-divider" /><span className="chat-live-item chat-live-3d"><b>3D</b>{loading3D ? '···' : formatNumeral(latest3D?.result || '--', numeralMode)}</span></span><button className="chat-mini-action" onClick={onToggleNumeral} title="ဂဏန်းပုံစံပြောင်း">{numeralMode === 'myanmar' ? '၁၂၃' : '123'}</button><button className="chat-mini-action" onClick={onRefresh} disabled={refreshing} title="Live data ပြန်ရယူရန်"><RefreshCw className={refreshing ? 'spin' : ''} /></button></div></div>
+        <div className="chat-surface-head"><div className="chat-agent"><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /><div><strong>Mr.A</strong><span><i /> အဆင်သင့်ရှိနေပါတယ်</span></div></div><div className="chat-surface-tools"><button className="chat-icon-button" aria-label="User profile" title="User profile"><UserRound /></button><button className="chat-icon-button" aria-label="Website settings" title="Website settings"><Settings /></button></div></div>
         <div className="chat-feed" ref={feedRef}>
-          {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A Brain'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === 'calendar' && <CalendarCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}</div></article>)}
-          {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A Brain စဉ်းစားနေတယ်...</div></div>}
+          {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === 'calendar' && <CalendarCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}</div></article>)}
+          {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A စဉ်းစားနေတယ်...</div></div>}
           {error2D && <div className="chat-system-note">2D live data ကို ခဏမရသေးပါ။ နောက်တစ်ကြိမ် refresh လုပ်ပြီး ပြန်စစ်ပေးမယ်။</div>}
           {error3D && <div className="chat-system-note">3D data server ကို ချိတ်ဆက်နေပါတယ်။ ရရှိထားတဲ့ နောက်ဆုံးမှတ်တမ်းကို ပြထားပါတယ်။</div>}
           <div ref={bottomRef} />
