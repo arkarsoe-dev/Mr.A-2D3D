@@ -5,13 +5,13 @@ import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter'
 import { MrAInlineCharacter } from './MrAInlineCharacter';
 import { SiteLanguage } from './SettingsPanel';
 
-type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean; numeralMode: NumeralMode; onToggleNumeral: () => void; onRefresh: () => void; refreshing: boolean; language: SiteLanguage; onOpenSettings: () => void };
+type Props = { data2D: Live2DData | null; data3D: ThreeDResponse | null; loading2D: boolean; loading3D: boolean; error2D: boolean; error3D: boolean; numeralMode: NumeralMode; onToggleNumeral: () => void; onRefresh: () => void; refreshing: boolean; language: SiteLanguage; onOpenSettings: () => void; onOpenCalendar: () => void };
 type Entry = { id: string; role: 'assistant' | 'user'; text?: string; card?: '2d' | '3d' | 'sessions' | 'calendar'; data?: unknown; time: string };
 
 const timeLabel = () => new Date().toLocaleTimeString('my-MM', { hour: 'numeric', minute: '2-digit' });
 const starterText = 'မင်္ဂလာပါ။ ဒီနေရာမှာ မေးချင်တာကို လွတ်လပ်စွာ ရေးနိုင်ပါတယ်။';
 
-export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing, language, onOpenSettings }) => {
+export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D, error2D, error3D, numeralMode, onToggleNumeral, onRefresh, refreshing, language, onOpenSettings, onOpenCalendar }) => {
   const english = language === 'en';
   const [entries, setEntries] = useState<Entry[]>([{ id: 'welcome', role: 'assistant', text: starterText, time: timeLabel() }]);
   const [input, setInput] = useState('');
@@ -75,7 +75,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   const openDestination = (destination: '2d' | '3d' | 'calendar') => {
     if (destination === '2d') addEntry({ role: 'assistant', card: '2d', data: data2D, text: '2D Live page ကို ဖွင့်ပြထားပါတယ်။' });
     if (destination === '3d') addEntry({ role: 'assistant', card: '3d', data: data3D, text: '3D Result page ကို ဖွင့်ပြထားပါတယ်။' });
-    if (destination === 'calendar') addEntry({ role: 'assistant', card: 'calendar', data: data3D, text: '3D Calendar page ကို ဖွင့်ပြထားပါတယ်။' });
+    if (destination === 'calendar') { onOpenCalendar(); return; }
     scrollDown();
   };
   return <div className="chat-home-shell">

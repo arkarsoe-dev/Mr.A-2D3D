@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
 
 permissions:
   contents: read
@@ -29,6 +31,8 @@ jobs:
       - name: Install dependencies
         run: npm install --no-package-lock --no-audit --no-fund
 
+      - name: Sync 3D API results into calendar data
+        run: node scripts/sync-3d-data.mjs
       - name: Restore Vite source entry
         run: cp index.source.html index.html
 

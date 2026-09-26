@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChatHome } from './components/ChatHome';
+import { ThreeDCalendarPage } from './components/ThreeDCalendarPage';
 import { CloudModel, SettingsPanel, SiteLanguage, SiteTheme } from './components/SettingsPanel';
 import { Live2DData, NumeralMode, ThreeDResponse } from './types';
 import { playNotificationSound } from './utils/numberConverter';
@@ -16,6 +17,7 @@ export default function App() {
   const [model, setModel] = useState<CloudModel>(() => (localStorage.getItem('mra_model') as CloudModel) || 'mra');
   const [modelKeys, setModelKeys] = useState<Record<Exclude<CloudModel, 'mra'>, string>>(() => { try { return JSON.parse(localStorage.getItem('mra_model_keys') || '{}'); } catch { return {}; } });
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [data2D, setData2D] = useState<Live2DData | null>(null);
   const [data3D, setData3D] = useState<ThreeDResponse | null>(null);
   const [loading2D, setLoading2D] = useState(true);
@@ -67,5 +69,5 @@ export default function App() {
   const changeModelKey = (provider: Exclude<CloudModel, 'mra'>, value: string) => { const next = { ...modelKeys, [provider]: value }; setModelKeys(next); localStorage.setItem('mra_model_keys', JSON.stringify(next)); };
   useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
 
-  return <div className="mra-chat-app"><ChatHome data2D={data2D} data3D={data3D} loading2D={loading2D} loading3D={loading3D} error2D={error2D} error3D={error3D} numeralMode={numeralMode} onToggleNumeral={toggleNumeral} onRefresh={refresh} refreshing={isRefreshing} language={language} onOpenSettings={() => setSettingsOpen(true)} /><button className="sound-toggle" onClick={toggleSound} aria-label="အသံပြောင်းရန်">{soundEnabled ? 'SOUND ON' : 'SOUND OFF'}</button>{settingsOpen && <SettingsPanel language={language} theme={theme} model={model} keys={modelKeys} onLanguageChange={changeLanguage} onThemeChange={changeTheme} onModelChange={changeModel} onKeyChange={changeModelKey} onClose={() => setSettingsOpen(false)} />}</div>;
+  return <div className="mra-chat-app">{calendarOpen ? <ThreeDCalendarPage data3D={data3D} numeralMode={numeralMode} language={language} onBack={() => setCalendarOpen(false)} /> : <ChatHome data2D={data2D} data3D={data3D} loading2D={loading2D} loading3D={loading3D} error2D={error2D} error3D={error3D} numeralMode={numeralMode} onToggleNumeral={toggleNumeral} onRefresh={refresh} refreshing={isRefreshing} language={language} onOpenSettings={() => setSettingsOpen(true)} onOpenCalendar={() => setCalendarOpen(true)} />}<button className="sound-toggle" onClick={toggleSound} aria-label="အသံပြောင်းရန်">{soundEnabled ? 'SOUND ON' : 'SOUND OFF'}</button>{settingsOpen && <SettingsPanel language={language} theme={theme} model={model} keys={modelKeys} onLanguageChange={changeLanguage} onThemeChange={changeTheme} onModelChange={changeModel} onKeyChange={changeModelKey} onClose={() => setSettingsOpen(false)} />}</div>;
 }
