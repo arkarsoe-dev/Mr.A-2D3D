@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Activity, Bot, CalendarDays, Clock3, Hash, Loader2, RefreshCw, Send, Settings, Trophy, UserRound } from 'lucide-react';
+import { Activity, Bot, CalendarDays, Clock3, Hash, Loader2, Send, Settings, Timer, Trophy, UserRound } from 'lucide-react';
 import { Live2DData, NumeralMode, ThreeDResponse } from '../types';
 import { formatNumeral, formatMyanmarDateLabel } from '../utils/numberConverter';
 import { MrAInlineCharacter } from './MrAInlineCharacter';
@@ -18,6 +18,10 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   const [thinking, setThinking] = useState(false);
   const [last2D, setLast2D] = useState('');
   const [last3D, setLast3D] = useState('');
+  const [countdownSeconds, setCountdownSeconds] = useState<number | null>(null);
+  const [countdownTarget, setCountdownTarget] = useState('');
+  const initializedResult = useRef(false);
+  const latestResultKey = useRef('');
   const bottomRef = useRef<HTMLDivElement>(null);
   const feedRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +32,27 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   useEffect(() => { const result = data3D?.data?.[0]?.result; if (result) setLast3D(result); }, [data3D]);
   useEffect(() => { scrollDown(); }, [entries.length, thinking]);
   useEffect(() => { setEntries((prev) => prev.map((entry) => entry.id === 'welcome' ? { ...entry, text: english ? 'Hello. You can write anything you would like to ask here.' : starterText } : entry)); }, [english]);
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const next = (data2D?.result || []).map((item) => {
+        const [hours, minutes, seconds = '0'] = item.open_time.split(':');
+        const target = new Date(now); target.setHours(Number(hours), Number(minutes), Number(seconds), 0);
+        return { item, target };
+      }).filter(({ item, target }) => (item.twod === '--' || !item.twod) && target.getTime() > now.getTime()).sort((a, b) => a.target.getTime() - b.target.getTime())[0];
+      if (!next) { setCountdownSeconds(null); setCountdownTarget(''); return; }
+      const secondsLeft = Math.ceil((next.target.getTime() - now.getTime()) / 1000);
+      if (secondsLeft > 0 && secondsLeft <= 60) { setCountdownSeconds(secondsLeft); setCountdownTarget(next.item.open_time.slice(0, 5)); } else { setCountdownSeconds(null); setCountdownTarget(''); }
+    };
+    tick(); const timer = window.setInterval(tick, 1000); return () => window.clearInterval(timer);
+  }, [data2D]);
+  useEffect(() => {
+    const completed = (data2D?.result || []).filter((item) => item.twod && item.twod !== '--').sort((a, b) => `${a.stock_date} ${a.open_time}`.localeCompare(`${b.stock_date} ${b.open_time}`));
+    const latest = completed[completed.length - 1]; if (!latest) return;
+    const key = `${latest.stock_date}-${latest.open_time}-${latest.twod}`;
+    if (!initializedResult.current) { initializedResult.current = true; latestResultKey.current = key; return; }
+    if (key !== latestResultKey.current) { latestResultKey.current = key; setCountdownSeconds(null); addEntry({ role: 'assistant', card: '2d', data: data2D, text: `2D Live result ${formatNumeral(latest.twod, numeralMode)} ထွက်လာပါပြီ။` }); scrollDown(); }
+  }, [data2D, numeralMode]);
 
   const answerFor = (question: string): { text: string; card?: Entry['card']; data?: unknown } => {
     const q = question.toLowerCase();
@@ -55,9 +80,10 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   };
   return <div className="chat-home-shell">
       <section className="chat-surface" aria-label="Mr.A AI chat">
-        <div className="chat-surface-head"><div className="chat-agent"><div><strong>Mr.A</strong><span><i /> {english ? 'Ready to help' : 'အဆင်သင့်ရှိနေပါတယ်'}</span></div><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /></div><div className="chat-surface-tools"><button className="chat-icon-button" aria-label={english ? 'User profile' : 'အသုံးပြုသူ profile'} title={english ? 'User profile' : 'အသုံးပြုသူ profile'}><UserRound /></button><button className="chat-icon-button" aria-label={english ? 'Website settings' : 'Website settings'} title={english ? 'Website settings' : 'Website settings'} onClick={onOpenSettings}><Settings /></button></div></div>
+        <div className="chat-surface-head"><div className="chat-agent"><div><strong>Mr.A</strong><span><i /> {english ? 'Ready to help' : 'အဆင်သင့်ရှိနေပါတယ်'}</span></div><div className="mra-walk-zone"><MrAInlineCharacter twod={formatNumeral(live?.twod || '--', numeralMode)} loading={loading2D} onNavigate={openDestination} /></div></div><div className="chat-surface-tools"><button className="chat-icon-button" aria-label={english ? 'User profile' : 'အသုံးပြုသူ profile'} title={english ? 'User profile' : 'အသုံးပြုသူ profile'}><UserRound /></button><button className="chat-icon-button" aria-label={english ? 'Website settings' : 'Website settings'} title={english ? 'Website settings' : 'Website settings'} onClick={onOpenSettings}><Settings /></button></div></div>
         <div className="chat-feed" ref={feedRef}>
           {entries.map((entry) => <article key={entry.id} className={`chat-entry ${entry.role === 'user' ? 'is-user' : ''}`}><div className="chat-avatar">{entry.role === 'user' ? <UserRound /> : <Bot />}</div><div className="chat-entry-body"><div className="chat-entry-meta"><b>{entry.role === 'user' ? 'သင်' : 'Mr.A'}</b><time>{entry.time}</time></div>{entry.text && <p className="chat-bubble-text">{entry.text}</p>}{entry.card === '2d' && <LiveCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === '3d' && <ThreeCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}{entry.card === 'sessions' && <SessionsCard data={(entry.data as Live2DData) || data2D} numeralMode={numeralMode} />}{entry.card === 'calendar' && <CalendarCard data={(entry.data as ThreeDResponse) || data3D} numeralMode={numeralMode} />}</div></article>)}
+          {countdownSeconds !== null && <CountdownCard seconds={countdownSeconds} target={countdownTarget} />}
           {thinking && <div className="chat-entry"><div className="chat-avatar"><Bot /></div><div className="chat-thinking"><Loader2 className="spin" /> Mr.A စဉ်းစားနေတယ်...</div></div>}
           {error2D && <div className="chat-system-note">2D live data ကို ခဏမရသေးပါ။ နောက်တစ်ကြိမ် refresh လုပ်ပြီး ပြန်စစ်ပေးမယ်။</div>}
           {error3D && <div className="chat-system-note">3D data server ကို ချိတ်ဆက်နေပါတယ်။ ရရှိထားတဲ့ နောက်ဆုံးမှတ်တမ်းကို ပြထားပါတယ်။</div>}
@@ -68,6 +94,7 @@ export const ChatHome: React.FC<Props> = ({ data2D, data3D, loading2D, loading3D
   </div>;
 };
 
+function CountdownCard({ seconds, target }: { seconds: number; target: string }) { const mm = String(Math.floor(seconds / 60)).padStart(2, '0'); const ss = String(seconds % 60).padStart(2, '0'); return <div className="countdown-card"><div className="countdown-orbit"><Timer /><span>{mm}:{ss}</span></div><div><strong>2D Live မကြာမီ ထွက်ပါမယ်</strong><small>{target} draw အတွက် countdown</small></div><i className="countdown-pulse" /></div>; }
 function LiveCard({ data, numeralMode }: { data: Live2DData | null; numeralMode: NumeralMode }) { const live = data?.live; return <div className="context-card context-card-live"><div className="context-card-top"><span><Activity /> 2D LIVE TABLE</span><b>{formatMyanmarDateLabel(live?.date || '--', numeralMode)}</b></div><div className="live-card-grid"><div><small>ယခုထွက်ဂဏန်း</small><strong>{formatNumeral(live?.twod || '--', numeralMode)}</strong></div><div><small>SET INDEX</small><b>{formatNumeral(live?.set || '--', numeralMode)}</b></div><div><small>VALUE</small><b>{formatNumeral(live?.value || '--', numeralMode)}</b></div></div></div>; }
 function ThreeCard({ data, numeralMode }: { data: ThreeDResponse | null; numeralMode: NumeralMode }) { const item = data?.data?.[0]; return <div className="context-card context-card-3d"><div className="context-card-top"><span><Trophy /> 3D RESULT</span><b>နောက်ဆုံး draw</b></div><div className="three-card-main"><strong>{formatNumeral(item?.result || '--', numeralMode)}</strong><span><CalendarDays /> {item?.datetime || '--'}</span></div></div>; }
 function CalendarCard({ data, numeralMode }: { data: ThreeDResponse | null; numeralMode: NumeralMode }) { return <div className="context-card context-card-calendar"><div className="context-card-top"><span><CalendarDays /> 3D CALENDAR</span><b>draw history</b></div><div className="calendar-mini-grid">{(data?.data || []).slice(0, 6).map((item, index) => <div key={`${item.datetime}-${index}`}><small>{item.datetime || '--'}</small><strong>{formatNumeral(item.result || '--', numeralMode)}</strong></div>)}</div></div>; }
