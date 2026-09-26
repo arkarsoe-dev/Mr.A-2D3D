@@ -5,10 +5,10 @@ type Props = { twod?: string; loading?: boolean; onNavigate?: (destination: Dest
 
 export const MrAInlineCharacter: React.FC<Props> = ({ twod = '--', loading = false, onNavigate }) => {
   const [open, setOpen] = useState(false);
-  const [pose, setPose] = useState<'idle' | 'wave' | 'think' | 'dance'>('idle');
+  const [pose, setPose] = useState<'idle' | 'wave' | 'walk' | 'think' | 'dance'>('idle');
   const display = loading ? '···' : twod || '--';
   const navigate = (destination: Destination) => { onNavigate?.(destination); setOpen(false); };
-  useEffect(() => { const poses: Array<'idle' | 'wave' | 'think' | 'dance'> = ['idle', 'wave', 'think', 'dance']; let index = 0; const timer = window.setInterval(() => { index = (index + 1) % poses.length; setPose(poses[index]); }, 3600); return () => window.clearInterval(timer); }, []);
+  useEffect(() => { const poses: Array<'idle' | 'wave' | 'walk' | 'think' | 'dance'> = ['idle', 'wave', 'idle', 'walk', 'think', 'idle', 'dance']; let index = 0; const timer = window.setInterval(() => { index = (index + 1) % poses.length; setPose(poses[index]); }, 3600); return () => window.clearInterval(timer); }, []);
 
   return (
     <span className={`mra-inline-character mra-pose-${pose} ${loading ? 'is-loading' : ''} ${open ? 'is-open' : ''}`} role="group" aria-label={`Mr.A character says live 2D ${display}`}>

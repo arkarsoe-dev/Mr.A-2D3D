@@ -509,3 +509,15 @@ html, body, #root { width:100%; height:100%; overflow:hidden; }
 @media (max-width:700px) { .chat-icon-button { width:2rem; height:2rem; }.chat-icon-button svg { width:.88rem; height:.88rem; }.mra-inline-character .mra-bot-button { animation:inline-float-mobile 3.2s ease-in-out infinite; } }
 @keyframes inline-float-mobile { 0%,100% { transform:scale(.34) translateY(0); } 50% { transform:scale(.34) translateY(-3px); } }
 @media (prefers-reduced-motion:reduce) { .mra-inline-character .mra-bot-button,.mra-pose-wave .mra-bot-arm-right,.mra-pose-think .mra-bot-head,.mra-pose-dance .mra-bot-arm-left,.mra-pose-dance .mra-bot-arm-right,.mra-pose-dance .mra-bot-leg-left,.mra-pose-dance .mra-bot-leg-right,.mra-pose-dance .mra-bot-head { animation:none!important; } }
+
+/* Occasional walk cycle: Mr.A takes a few tiny steps without leaving the header. */
+.mra-pose-walk .mra-bot-button { animation:inline-walk 1.05s ease-in-out infinite; }
+.mra-pose-walk .mra-bot-arm-left { animation:bot-arm-left .52s infinite alternate ease-in-out; }
+.mra-pose-walk .mra-bot-arm-right { animation:bot-arm-right .52s infinite alternate ease-in-out; }
+.mra-pose-walk .mra-bot-leg-left { animation:bot-leg-left .52s infinite alternate ease-in-out; }
+.mra-pose-walk .mra-bot-leg-right { animation:bot-leg-right .52s infinite alternate ease-in-out; }
+.mra-pose-walk .mra-bot-visor i { background:#38bdf8; box-shadow:0 0 10px #38bdf8; }
+@keyframes inline-walk { 0%,100% { transform:scale(.39) translateX(-3px) translateY(0); } 50% { transform:scale(.39) translateX(4px) translateY(-2px); } }
+@media (max-width:700px) { .mra-pose-walk .mra-bot-button { animation:inline-walk-mobile 1.05s ease-in-out infinite; } }
+@keyframes inline-walk-mobile { 0%,100% { transform:scale(.34) translateX(-2px) translateY(0); } 50% { transform:scale(.34) translateX(3px) translateY(-2px); } }
+@media (prefers-reduced-motion:reduce) { .mra-pose-walk .mra-bot-button,.mra-pose-walk .mra-bot-arm-left,.mra-pose-walk .mra-bot-arm-right,.mra-pose-walk .mra-bot-leg-left,.mra-pose-walk .mra-bot-leg-right { animation:none!important; } }
